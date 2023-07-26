@@ -1,0 +1,918 @@
+"""
+The javascript `Date` as string. Type represents date and time as the ISO Date string.
+"""
+scalar DateTime
+
+"""
+Base interface for nodes that can be retrieved by ID.
+"""
+interface Node {
+  """Numeric ID"""
+  id: Int!
+}
+
+"""
+Code list item.
+"""
+type CodeListItem{
+  "Numeric ID"
+  id: Int!
+  "Name of the record"
+  name: String!
+}
+
+"""
+Cost usage item.
+"""
+type CostUsageItem {
+  "YearMonth"
+  yearMonth: String!
+  "UPN"
+  upn: String!
+  "Is user (false means server)"
+  isUser: Boolean!
+  "Hours spend in the mesh"
+  hours: Float!
+  "Cost"
+  cost: Float!
+}
+
+"""
+Cost usage month item.
+"""
+type CostUsageMonthItem {
+  "YearMonth"
+  yearMonth: String!
+  "Cost"
+  cost: Float!
+  "Cost usage items for resources in mesh"
+  costUsageItems: [CostUsageItem!]!
+}
+
+"""
+Firewall configuration
+"""
+type FwConfig implements Node {
+  "Numeric ID"
+  id: Int!
+  "Friendly name of the configuration"
+  name: String
+  "Rules for outgoing communication"
+  fwConfigOuts: [FwConfigRule!]!
+  "Rules for incoming communication"
+  fwConfigIns: [FwConfigRule!]!
+  "Date and time of the last modification to this configuration"
+  changed: DateTime!
+}
+
+"""
+Firewall rule
+"""
+type FwConfigRule {
+  "Port to / from which the communication is comming"
+  port: String!
+  "Communication protocol"
+  proto: String!
+  """Remote hostname, "any" or "group" """
+  host: String!
+  """Groups to / from which the communication is allowed if host is set to "group" """
+  groups: [Group!]
+}
+
+"""
+Group of entities.
+"""
+type Group implements Node {
+  "Numeric ID"
+  id: Int!
+  "Name of the group"
+  name: String!
+  "Optional description of the group"
+  description: String
+}
+
+"""
+Access statistic.
+"""
+type AccessStatistic {
+  "Nebula tunnel is connected to lighthouse"
+  isConnectd: Boolean
+  "Communication over WebSocket underlay tunnel - communication over restrictive network"
+  isOverRestrictiveNetwork: Boolean
+  "Last contact from client"
+  lastContact: DateTime
+  "Last contact from client from now in seconds"
+  lastContactFromNow: Int
+}
+
+"""
+Access device info.
+"""
+type AccessDevice {
+  "Device name"
+  name: String!
+  "Device Id for communication with shieldoo"
+  deviceId: String!
+  "Device OS type - [windows,darwin,linux,android,ios,synology]"
+  deviceOSType: String!
+  "Device OS"
+  deviceOS: String!
+  "Device client software version"
+  deviceSWVersion: String!
+  "Last contact from device - login message"
+  contacted: DateTime
+  "OS Auto update statistics"
+  osAutoUpdate: OsAutoUpdate
+}
+
+"""
+OS Auto update statistics data.
+"""
+type OsAutoUpdate {
+  "OS type - [windows,darwin,linux,android,ios,synology]"
+	osType: String!
+  "OS name"
+	name: String!
+  "OS version"
+  version: String!
+  "OS description"
+  description: String!
+  "Last update date"
+  lastUpdate: DateTime!
+  "Last update output"
+  lastUpdateOutput: String!
+  "Last update success"
+  lastUpdateSuccess: Boolean!
+  "Security updates count"
+  securityUpdatesCount: Int!
+  "Other updates count"
+  otherUpdatesCount: Int!
+  "Security updates"
+  securityUpdates: [String!]!
+  "Other updates"
+  otherUpdates: [String!]!
+}
+
+"""
+Definition of the access rules for a single entity in the mesh.
+One entity can eventually have multiple accesses, e.g. for test and prod environments.
+"""
+type Access {
+  "Numeric ID"
+  id: Int!
+  "Name"
+  name: String!
+  "IP address assigned to the entity"
+  ipAddress: String!
+  "Fully Qualified Domain Name of the entity"
+  fqdn: String!
+  "Optional description of the access definition"
+  description: String
+  "Groups that the entity is a member of"
+  groups: [Group!]!
+  "Firewall configuration"
+  fwConfig: FwConfig!
+  "Date and time from which this access definition is valid in the mesh"
+  validFrom: DateTime!
+  "Date and time after which this access definition is no longer valid in the mesh"
+  validTo: DateTime!
+  "Date and time of the last modification to this access"
+  changed: DateTime!
+  "Optional access listeners allowing communication forwarding (access box)"
+  listeners: [AccessListener!]!
+  "Base64 encoded configuration data for this access"
+  config: String
+  "Setting for nebula communication - punch back mode"
+  punchBack: Boolean!
+  "Setting for nebula communication - work on restrictive network"
+  restrictiveNetwork: Boolean!
+  "Access connection`s statistics"
+  statistics: AccessStatistic
+  "Device Access connection`s metadata"
+  deviceInfo: AccessDevice
+}
+
+"""
+Servers accessed by user
+"""
+type ServerForAccess {
+  "Unique name of server"
+  name: String!
+  "Servers' mesh IP address"
+  ipAddress: String!
+  "Optional description"
+  description: String
+  "Optional access listeners allowing communication forwarding (access box)"
+  listeners: [AccessListener!]!
+  "Access connection`s statistics"
+  statistics: AccessStatistic
+}
+
+"""
+Definition of the access rules for a single user in the mesh.
+One user can eventually have multiple user-accesses, e.g. for test and prod environments.
+"""
+type UserAccess {
+  "Numeric ID"
+  id: Int!
+  "Name"
+  name: String!
+  "Optional description of the access definition"
+  description: String
+  "Groups that the entity is a member of"
+  groups: [Group!]!
+  "Firewall configuration"
+  fwConfig: FwConfig!
+  "Date and time from which this access definition is valid in the mesh"
+  validFrom: DateTime!
+  "Date and time after which this access definition is no longer valid in the mesh"
+  validTo: DateTime!
+  "Date and time of the last modification to this access"
+  changed: DateTime!
+  "Link to parent UserAccessTemplate"
+  userAccessTemplate: UserAccessTemplate!
+  "Accesses associated to this UserAccess"
+  accesses: [Access!]!
+  "Servers for access - resources which can be accessed by user"
+  serversForAccess: [ServerForAccess!]!
+}
+
+"""
+Definition of the template access rules for a user entity in the mesh.
+"""
+type UserAccessTemplate {
+  "Numeric ID"
+  id: Int!
+  "Name"
+  name: String!
+  "Optional description of the access definition"
+  description: String
+  "Groups that the entity is a member of"
+  groups: [Group!]!
+  "Firewall configuration"
+  fwConfig: FwConfig!
+  "Date and time from which this access definition is valid in the mesh"
+  validFrom: DateTime!
+  "Date and time after which this access definition is no longer valid in the mesh"
+  validTo: DateTime!
+  "Date and time of the last modification to this access"
+  changed: DateTime!
+}
+
+"""
+Access listener type defines type of connected device
+"""
+type AccessListenerType {
+  "Numeric ID"
+  id: Int!
+  "Glyph - for mapping to icon"
+  glyph: String!
+  "Name / description of item"
+  name: String!
+}
+
+"""
+Access listener defines rules for communication forwarding (access box)
+"""
+type AccessListener {
+  "Port on which the server is listening"
+  listenPort: Int
+  "Communication protocol"
+  protocol: String
+  "Port to which the communication is to be forwarded"
+  forwardPort: Int
+  "Name of the host to which the communication is to be forwarded"
+  forwardHost: String
+  "Mapping to AccessListenerType"
+  accessListenerType: AccessListenerType
+  "Description"
+  description: String
+}
+
+"""
+Entity in the mesh; It may be a User or a Server.
+"""
+interface Entity {
+  "Numeric ID"
+  id: Int!
+  "Display name of the entity"
+  name: String!
+  "Optional description of the entity"
+  description: String
+}
+
+"""
+User of the system (client entity)
+"""
+type User implements Entity {
+  "Numeric ID"
+  id: Int!
+  "User's email"
+  upn: String!
+  "User's name"
+  name: String!
+  "Optional user description"
+  description: String
+  "UserAccess definitions issued for this user"
+  userAccesses: [UserAccess!]!
+  "Origin of account - from authentication - google/microsoft"
+  origin: String
+  "User roles"
+  roles: [String]!
+}
+
+"""
+Server in the mesh (device entity)
+"""
+type Server implements Entity {
+  "Numeric ID"
+  id: Int!
+  "Unique name of the server"
+  name: String!
+  "Setting for app management - allow client to autoupdate"
+  allowAutoUpdate: Boolean!
+  "Optional server description"
+  description: String
+  "Access definition issued for this server"
+  access: Access!
+  "Server OS auto update policy"
+  serverOSAutoUpdatePolicy: ServerOSAutoUpdatePolicy!
+}
+
+"""
+Server OS auto update policy
+"""
+type ServerOSAutoUpdatePolicy {
+  "OS auto update enabled"
+  osAutoUpdateEnabled: Boolean!
+  "OS auto update hour"
+  osAutoUpdateHour: Int!
+  "Security auto update enabled"
+  securityAutoUpdateEnabled: Boolean!
+  "All auto update enabled"
+  allAutoUpdateEnabled: Boolean!
+  "Restart after update"
+  restartAfterUpdate: Boolean!
+}
+
+"""
+Lighthouse entity
+"""
+type Lighthouse {
+  "Public IP address"
+  publicIp: String!
+  "Nebula listening UDP port"
+  port: Int!
+  "Internal IP address in mesh"
+  ipAddress: String!
+}
+
+"""
+AAD configuration data
+"""
+type AadConfig {
+  "AAD integration enabled"
+  isEnabled: Boolean!
+  "AAD application ID"
+  clientId: String!
+  "AAD application secret - we are showing only first 3 characters from secret"
+  clientSecret: String!
+  "AAD tenant ID"
+  tenantId: String!
+  "AAD admin group object ID"
+  adminGroupObjectId: String!
+  "Last processing message"
+  lastProcessingMessage: String!
+}
+
+"""
+CLI API configuration data
+"""
+type CliApiConfig {
+  "CLI API integration enabled"
+  isEnabled: Boolean!
+  "CLI API URL"
+  url: String!
+  "CLI API Key - we are showing only first 3 characters from key when querying, full key returned when setting"
+  apiKey: String!
+}
+
+"""
+System Configuration attributes
+"""
+type SystemConfig {
+  "Network mesh CIDR"
+  networkCidr: String!
+  "List of lighthouses"
+  lighthouses: [Lighthouse]!
+  "Maximum CA DateTime validity - Accesses cannot have validity after this date"
+  maximumCertificateValidity: DateTime!
+  "AAD configuration"
+  aadConfig: AadConfig!
+  "CLI API configuration"
+  cliApiConfig: CliApiConfig!
+}
+
+"""
+Log data
+"""
+type LogItem {
+  "Unique ID"
+  id: Int!
+  "UPN generated event"
+  upn: String!
+  "Log data"
+  data: String!
+  "Date and time when event was created"
+  created: DateTime!
+}
+
+"""
+Config data
+"""
+type ConfigItem {
+  "Max DB records"
+  maxDBRecords: Int!
+  "Tenant ID"
+  tenantId: String!
+  "Full tenant name"
+  tenantName: String!
+  "Max certificate validity - max value for ValidTo for access"
+  maxCertificateValidity: DateTime!
+  "Integration with AAD or other identity platform enabled"
+  identityImportEnabled: Boolean!
+}
+
+"""
+User connection statistics items
+"""
+type UserStatistic {
+  "Date"
+  date: String!
+  "Hour"
+  hour: Int!
+  "Number of users online"
+  usersOnline: Int!
+}
+
+"""
+Admin dashboard data
+"""
+type AdminDashboard {
+  "Number of users"
+  users: Int!
+  "Number of servers"
+  servers: Int!
+  "Number of invited users"
+  invitedUsers: Int!
+  "User connection statistics"
+  userStatistics: [UserStatistic]!
+}
+
+"""
+Queries
+"""
+type Query {
+  "Get Month cost usage data"
+  monthCostUsage: [CostUsageMonthItem!]!
+
+  "Configuration data"
+  config: ConfigItem!
+
+  "Admin dashboard data"
+  adminDashboard: AdminDashboard!
+
+  "Code list groups"
+  codelistGroups: [CodeListItem!]!
+
+  "Code list firewalls"
+  codelistFirewalls: [CodeListItem!]!
+
+  "Code list UserAccessTemplates"
+  codelistUserAccessTemplates: [CodeListItem!]!
+
+  "Search telemetry log"
+  telemetryLogs(
+    "Optional filter - To query field content, use Field=Value for a 'LIKE' comparison or Field~Value for a strict equality. To query multiple fields, separate them with a comma. Nested fields are separated by dot, e.g. CurrentObject.ID=1,Entity=Access"
+    filter: String
+    "Optional upn filter"
+    upn: String
+    "Optional created from filter"
+    createdFrom: DateTime
+    "Optional created to filter"
+    createdTo: DateTime
+  ): [LogItem!]!
+
+  "Search security log"
+  securityLogs(
+    "Optional filter - To query field content, use Field=Value for a 'LIKE' comparison or Field~Value for a strict equality. To query multiple fields, separate them with a comma. Nested fields are separated by dot, e.g. CurrentObject.ID=1,Entity=Access"
+    filter: String
+    "Optional upn filter"
+    upn: String
+    "Optional created from filter"
+    createdFrom: DateTime
+    "Optional created to filter"
+    createdTo: DateTime
+  ): [LogItem!]!
+
+  "Get system Configuration data"
+  systemConfig: SystemConfig!
+
+  "List of users"
+  users(
+    "Optional user name filter"
+    name: String
+    "Optional origin filter"
+    origin: String
+  ): [User!]!
+
+  "List of servers"
+  servers(
+    "Optional server name filter"
+    name: String
+  ): [Server!]!
+
+  "Retrieve a current user info"
+  me: User!
+
+  "Retrieve a concrete user by its ID"
+  server(id: Int!): Server!
+
+  "Retrieve a concrete entity by its ID"
+  user(id: Int!): User!
+
+  "Retrieve a group by its ID"
+  group(id: Int!): Group!
+
+  "List of groups"
+  groups(
+    "Optional group name filter"
+    name: String
+  ): [Group!]!
+
+  "List of access listener types"
+  accessListenerTypes(
+    "Optional name filter"
+    name: String
+  ): [AccessListenerType!]!
+
+  "Retrieve a UserAccessTemplate by its ID"
+  userAccessTemplate(id: Int!): UserAccessTemplate!
+
+  "List of user access templates"
+  userAccessTemplates(
+    "Optional user access template name filter"
+    name: String
+  ): [UserAccessTemplate!]!
+
+  "Retrieve a firewall configuration by its ID"
+  firewallConfiguration(id: Int!): FwConfig!
+
+  "List firewall configurations"
+  firewallConfigurations(
+    "Optional configuration name filter"
+    name: String
+  ): [FwConfig!]!
+}
+
+"""
+Data needed to create a new or update an existing group
+"""
+input GroupData {
+  "ID of the group if it already exists"
+  id: Int
+  "Name of the group"
+  name: String!
+  "Optional group description"
+  description: String
+}
+
+"""
+Data needed to create a new or update an existing user
+"""
+input UserData {
+  "ID of the user if it already exists"
+  id: Int
+  "Unique name of the entity"
+  upn: String!
+  "Display name of the entity"
+  name: String!
+  "Optional entity description"
+  description: String
+  "Origin of account - from authentication - google/microsoft"
+  origin: String
+  "User roles"
+  roles: [String]!
+}
+
+"""
+Data needed to create a new or update an existing user
+"""
+input InviteUserData {
+  "ID of the user if it already exists"
+  id: Int
+  "Unique name of the entity"
+  upn: String!
+  "Display name of the entity"
+  name: String!
+  "Optional entity description"
+  description: String
+  "User roles"
+  roles: [String]!
+  "ID of parent UserAccessTemplate object - if is empty than we will use default UserAccessTemplate"
+  userAccessTemplateId: Int
+}
+
+"""
+Data needed to create a new or update an existing server
+"""
+input ServerData {
+  "ID of the server if it already exists"
+  id: Int
+  "Unique name of the server"
+  name: String!
+  "Setting for app management - allow client to autoupdate"
+  allowAutoUpdate: Boolean!
+  "Optional entity description"
+  description: String
+  "Server access profile"
+  access: ServerAccessData
+  "Server OS auto update policy"
+  osAutoUpdatePolicy: ServerOSAutoUpdatePolicyData
+}
+
+"""
+Data needed to create a new or update an existing server OS auto update policy
+"""
+input ServerOSAutoUpdatePolicyData {
+  "OS auto update enabled"
+  osAutoUpdateEnabled: Boolean!
+  "OS auto update hour"
+  osAutoUpdateHour: Int!
+  "Security auto update enabled"
+  securityAutoUpdateEnabled: Boolean!
+  "All auto update enabled"
+  allAutoUpdateEnabled: Boolean!
+  "Restart after update"
+  restartAfterUpdate: Boolean!
+}
+
+"""
+Data necessary for creating a new or updating an existing firewall configuration
+"""
+input FwConfigData {
+  "ID of the configuration if it already exists"
+  id: Int
+  "Friendly name of the configuration"
+  name: String
+  "Rules for outgoing communication"
+  fwConfigOuts: [FwConfigRuleData!]!
+  "Rules for incoming communication"
+  fwConfigIns: [FwConfigRuleData!]!
+}
+
+"""
+Data necessary for creating a firewall config rule
+"""
+input FwConfigRuleData {
+  "Port to / from which the communication is comming"
+  port: String!
+  "Communication protocol"
+  proto: String!
+  """Remote hostname, "any" or "group" """
+  host: String!
+  """Groups to / from which the communication is allowed if host is set to "group" """
+  groups: [GroupData!]
+}
+
+"""
+Data necessary for creating an access listener
+"""
+input AccessListenerData {
+  "Port on which the server is listening"
+  listenPort: Int!
+  "Communication protocol"
+  protocol: String!
+  "Port to which the communication is to be forwarded"
+  forwardPort: Int!
+  "Name of the host to which the communication is to be forwarded"
+  forwardHost: String!
+  "ID of access listener type"
+  accessListenerTypeId: Int!
+  "Description"
+  description: String!
+}
+
+"""
+Data necessary for creating or updating an server-access definition
+"""
+input ServerAccessData {
+  "IP address to be assigned to the entity or null if one should be taken from the pool"
+  ipAddress: String
+  "Optional description of the access definition"
+  description: String
+  "IDs of the groups that the entity is a member of"
+  groupsIds: [Int!]!
+  "ID of the firewall configuration"
+  fwConfigId: Int!
+  "Date and time after which this access definition is no longer valid in the mesh"
+  validTo: DateTime!
+  "Optional access listeners allowing communication forwarding (access box)"
+  listeners: [AccessListenerData!]!
+  "Setting for nebula communication - punch back mode"
+  punchBack: Boolean!
+  "Setting for nebula communication - work on restrictive network"
+  restrictiveNetwork: Boolean!
+}
+
+"""
+Data necessary for creating or updating an access definition
+"""
+input UserAccessData {
+  "ID of the access if it already exists"
+  id: Int
+  "Name"
+  name: String!
+  "Optional description of the access definition"
+  description: String
+  "IDs of the groups that the entity is a member of"
+  groupsIds: [Int!]!
+  "ID of the firewall configuration"
+  fwConfigId: Int!
+  "Date and time after which this access definition is no longer valid in the mesh"
+  validTo: DateTime!
+  "ID of parent UserAccessTemplate object"
+  userAccessTemplateId: Int
+  "ID of entity"
+  entityId: Int!
+}
+
+"""
+Data necessary for creating or updating an access definition
+"""
+input UserAccessTemplateData {
+  "ID of the access if it already exists"
+  id: Int
+  "Name"
+  name: String!
+  "Optional description of the access definition"
+  description: String
+  "IDs of the groups that the entity is a member of"
+  groupsIds: [Int!]!
+  "ID of the firewall configuration"
+  fwConfigId: Int!
+  "Date and time after which this access definition is no longer valid in the mesh"
+  validTo: DateTime!
+  "Flag if record is deleted"
+  deleted: Boolean!
+}
+
+"""
+Data necessary for changing system config
+"""
+input SystemConfigData {
+  "CIDR"
+  networkCidr: String!
+}
+
+"""
+Data necessary for changing AAD configuration 
+"""
+input AadConfigData {
+  "AAD integration enabled"
+  isEnabled: Boolean!
+  "AAD application ID"
+  clientId: String!
+  "AAD application secret"
+  clientSecret: String!
+  "AAD tenant ID"
+  tenantId: String!
+  "AAD admin group object ID"
+  adminGroupObjectId: String!
+}
+
+"""
+Data necessary for changing CLI API configuration 
+"""
+input CliApiConfigData {
+  "CLI API integration enabled"
+  enabled: Boolean!
+}
+
+"""
+Data necessary for creating users' device access and info.
+"""
+input AccessDeviceData {
+  "Device name"
+  name: String!
+  "Device Id for communication with shieldoo"
+  deviceId: String!
+  "Device OS type - [windows,darwin,linux,android,ios,synology]"
+  deviceOSType: String!
+  "Device OS - full name"
+  deviceOS: String!
+  "Device client software version"
+  deviceSWVersion: String!
+  "Last contact from device - login message"
+  contacted: DateTime
+}
+
+"""
+Result data for creating user access device.
+"""
+type UserAccessDeviceInfo {
+  "Access"
+  access: Access!
+  "Certificate data"
+  certificate: String!
+  "CA public key"
+  caPublicKey: String!
+  "Lighthouse public IP"
+  lighthouseIp: String!
+  "Lighthouse port"
+  lighthousePort: Int!
+  "Lighthouse private IP"
+  lighthousePrivateIp: String!
+}
+
+"""
+Mutations
+"""
+type Mutation {
+  "Change system configuration"
+  systemConfigSave(data: SystemConfigData!): SystemConfig!
+
+  "Change AAD configuration"
+  systemAadConfigSave(data: AadConfigData!): AadConfig!
+
+  "Change CLI API configuration"
+  systemCliApiConfigSave(data: CliApiConfigData!): CliApiConfig!
+
+  "Invite user"
+  userInvite(data: InviteUserData!): User!
+
+  "Deletes an server with a given ID"
+  serverDelete(id: Int!): Server!
+
+  "Deletes an user with a given ID"
+  userDelete(id: Int!): User!
+
+  "Creates or updates a server"
+  serverSave(data: ServerData): Server!
+
+  "Creates or updates a user"
+  userSave(data: UserData!): User!
+
+  "Deletes a group with a given ID"
+  groupDelete(id: Int!): Group!
+
+  "Creates or updates a group"
+  groupSave(data: GroupData!): Group!
+
+  "Deletes a UserAccessTemplate with a given ID"
+  userAccessTemplateDelete(id: Int!): UserAccessTemplate!
+
+  "Creates or updates a UserAccessTemplate"
+  userAccessTemplateSave(data: UserAccessTemplateData!): UserAccessTemplate!
+
+  "Deletes a firewall configuration with a given ID"
+  firewallConfigurationDelete(id: Int!): FwConfig!
+
+  "Creates or updates a firewall configuration"
+  firewallConfigurationSave(data: FwConfigData!): FwConfig!
+
+  "Deletes an access definition with a given ID"
+  userAccessDelete(id: Int!): UserAccess!
+
+  "Creates or updates an access definition"
+  userAccessSave(data: UserAccessData!): UserAccess!
+
+  "Users' device save note"
+  userDeviceSaveNote(
+    "Access ID"
+    id: Int!
+    "Note"
+    note: String!
+  ): Access!
+
+  "Users' device delete - delete device info and access data"
+  userDeviceDelete(
+    "Access ID"
+    id: Int!
+  ): Int!
+
+  "Users' device create"
+  userDeviceCreate(
+    "ID of user access configuration"
+    userAccessId: Int!
+    "Users' device metadata"
+    data: AccessDeviceData!
+    "Public key for signing"
+    publicKey: String
+  ): UserAccessDeviceInfo!
+}
+
+schema {
+  query: Query
+  mutation: Mutation
+}

@@ -1,0 +1,70 @@
+on:
+  push:
+    tags:
+    - 'v[0-9]+.[0-9]+.[0-9]*'
+    - 'v[0-9]+.[0-9]+.[0-9]*-*'
+
+name: Create release
+
+jobs:
+
+  build-linux:
+    name: Build Linux
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    # version
+    - name: Prepare version
+      env:
+        ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+      run: |
+        export MYTAG=${GITHUB_REF#refs/tags/v}
+        echo "MYTAG: $MYTAG"
+        echo "::set-env name=MYTAG::$MYTAG"
+
+    - name: prepare app version
+      run: |
+        sed -i 's/#APPVERSION#/'$MYTAG'/g' ./main/version.go
+
+    # build in docker
+    - name: docker build and push
+      uses: docker/login-action@v2
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    - name: Build and push to container registry
+      uses: docker/build-push-action@v3
+      with:
+        context: .
+        push: true
+        tags: ghcr.io/${{ github.repository }}:latest,ghcr.io/${{ github.repository }}:${{ env.MYTAG }}
+
+  release:
+    name: Create Release
+    needs: [build-linux]
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Create changelog text
+        id: changelog
+        uses: loopwerk/tag-changelog@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: |
+            ${{ steps.changelog.outputs.changes }}
+          draft: false
+          prerelease: false
+
