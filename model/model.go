@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/shieldoo/shieldoo-mesh-admin/utils"
@@ -149,18 +150,19 @@ func dbCreateDefaultData(db *gorm.DB) {
 	if _cfg.Auth.AdminUser != "" && !systemConfig.AADSyncConfig.Enabled {
 		var u Entity
 		if result := db.First(&u, "upn = ?", _cfg.Auth.AdminUser); result.Error != nil {
+			adminUserLower := strings.ToLower(_cfg.Auth.AdminUser)
 			if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-				log.Debug("create admin user: ", _cfg.Auth.AdminUser)
+				log.Debug("create admin user: ", adminUserLower)
 				u = Entity{
 					EntityType:  ENTITY_USER,
-					UPN:         _cfg.Auth.AdminUser,
-					Name:        _cfg.Auth.AdminUser,
+					UPN:         adminUserLower,
+					Name:        adminUserLower,
 					Origin:      "invited",
 					Roles:       `["USER","ADMINISTRATOR"]`,
 					Description: "",
 				}
 				var o Entity
-				DacInviteUser(_cfg.Auth.AdminUser, ENTITY_DEFAULTTEMPLATE_ID, &u, &o)
+				DacInviteUser(adminUserLower, ENTITY_DEFAULTTEMPLATE_ID, &u, &o)
 				// send invitation email
 				// go SendInvitationEmail(u.UPN)
 			}
