@@ -63,11 +63,11 @@ type Config struct {
 		HourPrice  float64 `yaml:"hourprice", envconfig:"HOURPRICE"`
 	} `yaml:"costmanagement"`
 	// external plugins
-	Segment          SegmentEventInterface
-	SecurityLogStore logstore.SecurityLogStoreInterface
-	LogStore         logstore.LogStoreInterface
-	ModelEncyptor    ModelEncyptorInterface
-	Emailing         EmailInterface
+	Segment          SegmentEventInterface              `yaml:"-"`
+	SecurityLogStore logstore.SecurityLogStoreInterface `yaml:"-"`
+	LogStore         logstore.LogStoreInterface         `yaml:"-"`
+	ModelEncyptor    ModelEncyptorInterface             `yaml:"-"`
+	Emailing         EmailInterface                     `yaml:"-"`
 }
 
 var cfg Config
