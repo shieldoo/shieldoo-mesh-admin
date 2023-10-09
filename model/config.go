@@ -245,7 +245,7 @@ func (c SystemConfigDef) Save(tx *gorm.DB, gencerts bool) error {
 				Name:         "lighthouse",
 				Changed:      time.Now().UTC(),
 				Fwconfigouts: []Fwconfigout{{Proto: "any", Port: "any", Host: "any"}},
-				Fwconfigins:  []Fwconfigin{{Proto: "icmp", Port: "any", Host: "any"}, {Proto: "tcp", Port: "80", Host: "any"}, {Proto: "udp", Port: "53", Host: "any"}},
+				Fwconfigins:  []Fwconfigin{{Proto: "any", Port: "any", Host: "any"}},
 			}
 
 			// generate IP address
@@ -335,6 +335,12 @@ func InitSystemConfig() {
 
 	// #### load lighthouses
 	var newL []LighthouseConfig
+	// sanitize lighthouses - if there are lighthouse without subnets
+	for _, l := range systemConfig.Lighthouses {
+		if strings.Contains(l.Access.Certificate.Metadata, "\"subnets\":[]}") {
+			regenCerts = true
+		}
+	}
 	// delete unused lighthouses
 	for _, l := range systemConfig.Lighthouses {
 		_f := false
