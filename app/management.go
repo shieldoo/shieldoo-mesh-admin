@@ -168,6 +168,16 @@ func managementConfigUPNPost(w http.ResponseWriter, r *http.Request) {
 	db.Raw("select a.id, a.changed as acc, a.name, a.secret from entities e inner join user_accesses a on a.entity_id =e.id where e.upn = ? and valid_to > now() order by a.id",
 		oauthRequestPayload(r).UPN).Scan(&result)
 	hi := fmt.Sprintf("%v", result)
+	// decrypt secrets
+	for i, v := range result {
+		var err error
+		result[i].Secret, err = _cfg.ModelEncyptor.Decrypt(v.Secret)
+		if err != nil {
+			log.Error("Unable to decrypt secret: ", err)
+			http.Error(w, "Server error", http.StatusInternalServerError)
+			return
+		}
+	}
 	log.Debug("DB hash data: ", hi)
 	hash := sha256.Sum256([]byte(hi))
 	hashstr := base64.URLEncoding.EncodeToString(hash[:])
