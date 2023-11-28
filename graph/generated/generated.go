@@ -53,22 +53,23 @@ type ComplexityRoot struct {
 	}
 
 	Access struct {
-		Changed            func(childComplexity int) int
-		Config             func(childComplexity int) int
-		Description        func(childComplexity int) int
-		DeviceInfo         func(childComplexity int) int
-		Fqdn               func(childComplexity int) int
-		FwConfig           func(childComplexity int) int
-		Groups             func(childComplexity int) int
-		ID                 func(childComplexity int) int
-		IPAddress          func(childComplexity int) int
-		Listeners          func(childComplexity int) int
-		Name               func(childComplexity int) int
-		PunchBack          func(childComplexity int) int
-		RestrictiveNetwork func(childComplexity int) int
-		Statistics         func(childComplexity int) int
-		ValidFrom          func(childComplexity int) int
-		ValidTo            func(childComplexity int) int
+		AdditionalHostnames func(childComplexity int) int
+		Changed             func(childComplexity int) int
+		Config              func(childComplexity int) int
+		Description         func(childComplexity int) int
+		DeviceInfo          func(childComplexity int) int
+		Fqdn                func(childComplexity int) int
+		FwConfig            func(childComplexity int) int
+		Groups              func(childComplexity int) int
+		ID                  func(childComplexity int) int
+		IPAddress           func(childComplexity int) int
+		Listeners           func(childComplexity int) int
+		Name                func(childComplexity int) int
+		PunchBack           func(childComplexity int) int
+		RestrictiveNetwork  func(childComplexity int) int
+		Statistics          func(childComplexity int) int
+		ValidFrom           func(childComplexity int) int
+		ValidTo             func(childComplexity int) int
 	}
 
 	AccessDevice struct {
@@ -422,6 +423,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.AadConfig.TenantID(childComplexity), true
+
+	case "Access.additionalHostnames":
+		if e.complexity.Access.AdditionalHostnames == nil {
+			break
+		}
+
+		return e.complexity.Access.AdditionalHostnames(childComplexity), true
 
 	case "Access.changed":
 		if e.complexity.Access.Changed == nil {
@@ -2122,6 +2130,8 @@ type Access {
   ipAddress: String!
   "Fully Qualified Domain Name of the entity"
   fqdn: String!
+  "List of additional hostnames for the entity"
+  additionalHostnames: [String!]!
   "Optional description of the access definition"
   description: String
   "Groups that the entity is a member of"
@@ -2665,6 +2675,8 @@ Data necessary for creating or updating an server-access definition
 input ServerAccessData {
   "IP address to be assigned to the entity or null if one should be taken from the pool"
   ipAddress: String
+  "Additional hostnames for the entity"
+  additionalHostnames: [String!]!
   "Optional description of the access definition"
   description: String
   "IDs of the groups that the entity is a member of"
@@ -2900,7 +2912,7 @@ func (ec *executionContext) field_Mutation_firewallConfigurationSave_args(ctx co
 	var arg0 gqlmodel.FwConfigData
 	if tmp, ok := rawArgs["data"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("data"))
-		arg0, err = ec.unmarshalNFwConfigData2githubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐFwConfigData(ctx, tmp)
+		arg0, err = ec.unmarshalNFwConfigData2githubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐFwConfigData(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -2930,7 +2942,7 @@ func (ec *executionContext) field_Mutation_groupSave_args(ctx context.Context, r
 	var arg0 gqlmodel.GroupData
 	if tmp, ok := rawArgs["data"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("data"))
-		arg0, err = ec.unmarshalNGroupData2githubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐGroupData(ctx, tmp)
+		arg0, err = ec.unmarshalNGroupData2githubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐGroupData(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -2960,7 +2972,7 @@ func (ec *executionContext) field_Mutation_serverSave_args(ctx context.Context, 
 	var arg0 *gqlmodel.ServerData
 	if tmp, ok := rawArgs["data"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("data"))
-		arg0, err = ec.unmarshalOServerData2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐServerData(ctx, tmp)
+		arg0, err = ec.unmarshalOServerData2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐServerData(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -2975,7 +2987,7 @@ func (ec *executionContext) field_Mutation_systemAadConfigSave_args(ctx context.
 	var arg0 gqlmodel.AadConfigData
 	if tmp, ok := rawArgs["data"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("data"))
-		arg0, err = ec.unmarshalNAadConfigData2githubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐAadConfigData(ctx, tmp)
+		arg0, err = ec.unmarshalNAadConfigData2githubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐAadConfigData(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -2990,7 +3002,7 @@ func (ec *executionContext) field_Mutation_systemCliApiConfigSave_args(ctx conte
 	var arg0 gqlmodel.CliAPIConfigData
 	if tmp, ok := rawArgs["data"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("data"))
-		arg0, err = ec.unmarshalNCliApiConfigData2githubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐCliAPIConfigData(ctx, tmp)
+		arg0, err = ec.unmarshalNCliApiConfigData2githubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐCliAPIConfigData(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -3005,7 +3017,7 @@ func (ec *executionContext) field_Mutation_systemConfigSave_args(ctx context.Con
 	var arg0 gqlmodel.SystemConfigData
 	if tmp, ok := rawArgs["data"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("data"))
-		arg0, err = ec.unmarshalNSystemConfigData2githubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐSystemConfigData(ctx, tmp)
+		arg0, err = ec.unmarshalNSystemConfigData2githubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐSystemConfigData(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -3035,7 +3047,7 @@ func (ec *executionContext) field_Mutation_userAccessSave_args(ctx context.Conte
 	var arg0 gqlmodel.UserAccessData
 	if tmp, ok := rawArgs["data"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("data"))
-		arg0, err = ec.unmarshalNUserAccessData2githubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐUserAccessData(ctx, tmp)
+		arg0, err = ec.unmarshalNUserAccessData2githubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐUserAccessData(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -3065,7 +3077,7 @@ func (ec *executionContext) field_Mutation_userAccessTemplateSave_args(ctx conte
 	var arg0 gqlmodel.UserAccessTemplateData
 	if tmp, ok := rawArgs["data"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("data"))
-		arg0, err = ec.unmarshalNUserAccessTemplateData2githubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐUserAccessTemplateData(ctx, tmp)
+		arg0, err = ec.unmarshalNUserAccessTemplateData2githubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐUserAccessTemplateData(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -3104,7 +3116,7 @@ func (ec *executionContext) field_Mutation_userDeviceCreate_args(ctx context.Con
 	var arg1 gqlmodel.AccessDeviceData
 	if tmp, ok := rawArgs["data"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("data"))
-		arg1, err = ec.unmarshalNAccessDeviceData2githubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐAccessDeviceData(ctx, tmp)
+		arg1, err = ec.unmarshalNAccessDeviceData2githubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐAccessDeviceData(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -3167,7 +3179,7 @@ func (ec *executionContext) field_Mutation_userInvite_args(ctx context.Context, 
 	var arg0 gqlmodel.InviteUserData
 	if tmp, ok := rawArgs["data"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("data"))
-		arg0, err = ec.unmarshalNInviteUserData2githubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐInviteUserData(ctx, tmp)
+		arg0, err = ec.unmarshalNInviteUserData2githubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐInviteUserData(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -3182,7 +3194,7 @@ func (ec *executionContext) field_Mutation_userSave_args(ctx context.Context, ra
 	var arg0 gqlmodel.UserData
 	if tmp, ok := rawArgs["data"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("data"))
-		arg0, err = ec.unmarshalNUserData2githubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐUserData(ctx, tmp)
+		arg0, err = ec.unmarshalNUserData2githubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐUserData(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -3942,6 +3954,50 @@ func (ec *executionContext) fieldContext_Access_fqdn(ctx context.Context, field 
 	return fc, nil
 }
 
+func (ec *executionContext) _Access_additionalHostnames(ctx context.Context, field graphql.CollectedField, obj *gqlmodel.Access) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Access_additionalHostnames(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.AdditionalHostnames, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]string)
+	fc.Result = res
+	return ec.marshalNString2ᚕstringᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Access_additionalHostnames(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Access",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Access_description(ctx context.Context, field graphql.CollectedField, obj *gqlmodel.Access) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Access_description(ctx, field)
 	if err != nil {
@@ -4011,7 +4067,7 @@ func (ec *executionContext) _Access_groups(ctx context.Context, field graphql.Co
 	}
 	res := resTmp.([]*gqlmodel.Group)
 	fc.Result = res
-	return ec.marshalNGroup2ᚕᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐGroupᚄ(ctx, field.Selections, res)
+	return ec.marshalNGroup2ᚕᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐGroupᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Access_groups(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -4063,7 +4119,7 @@ func (ec *executionContext) _Access_fwConfig(ctx context.Context, field graphql.
 	}
 	res := resTmp.(*gqlmodel.FwConfig)
 	fc.Result = res
-	return ec.marshalNFwConfig2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐFwConfig(ctx, field.Selections, res)
+	return ec.marshalNFwConfig2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐFwConfig(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Access_fwConfig(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -4251,7 +4307,7 @@ func (ec *executionContext) _Access_listeners(ctx context.Context, field graphql
 	}
 	res := resTmp.([]*gqlmodel.AccessListener)
 	fc.Result = res
-	return ec.marshalNAccessListener2ᚕᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐAccessListenerᚄ(ctx, field.Selections, res)
+	return ec.marshalNAccessListener2ᚕᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐAccessListenerᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Access_listeners(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -4435,7 +4491,7 @@ func (ec *executionContext) _Access_statistics(ctx context.Context, field graphq
 	}
 	res := resTmp.(*gqlmodel.AccessStatistic)
 	fc.Result = res
-	return ec.marshalOAccessStatistic2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐAccessStatistic(ctx, field.Selections, res)
+	return ec.marshalOAccessStatistic2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐAccessStatistic(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Access_statistics(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -4486,7 +4542,7 @@ func (ec *executionContext) _Access_deviceInfo(ctx context.Context, field graphq
 	}
 	res := resTmp.(*gqlmodel.AccessDevice)
 	fc.Result = res
-	return ec.marshalOAccessDevice2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐAccessDevice(ctx, field.Selections, res)
+	return ec.marshalOAccessDevice2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐAccessDevice(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Access_deviceInfo(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -4804,7 +4860,7 @@ func (ec *executionContext) _AccessDevice_osAutoUpdate(ctx context.Context, fiel
 	}
 	res := resTmp.(*gqlmodel.OsAutoUpdate)
 	fc.Result = res
-	return ec.marshalOOsAutoUpdate2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐOsAutoUpdate(ctx, field.Selections, res)
+	return ec.marshalOOsAutoUpdate2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐOsAutoUpdate(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_AccessDevice_osAutoUpdate(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -5033,7 +5089,7 @@ func (ec *executionContext) _AccessListener_accessListenerType(ctx context.Conte
 	}
 	res := resTmp.(*gqlmodel.AccessListenerType)
 	fc.Result = res
-	return ec.marshalOAccessListenerType2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐAccessListenerType(ctx, field.Selections, res)
+	return ec.marshalOAccessListenerType2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐAccessListenerType(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_AccessListener_accessListenerType(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -5554,7 +5610,7 @@ func (ec *executionContext) _AdminDashboard_userStatistics(ctx context.Context, 
 	}
 	res := resTmp.([]*gqlmodel.UserStatistic)
 	fc.Result = res
-	return ec.marshalNUserStatistic2ᚕᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐUserStatistic(ctx, field.Selections, res)
+	return ec.marshalNUserStatistic2ᚕᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐUserStatistic(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_AdminDashboard_userStatistics(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -6354,7 +6410,7 @@ func (ec *executionContext) _CostUsageMonthItem_costUsageItems(ctx context.Conte
 	}
 	res := resTmp.([]*gqlmodel.CostUsageItem)
 	fc.Result = res
-	return ec.marshalNCostUsageItem2ᚕᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐCostUsageItemᚄ(ctx, field.Selections, res)
+	return ec.marshalNCostUsageItem2ᚕᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐCostUsageItemᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_CostUsageMonthItem_costUsageItems(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -6495,7 +6551,7 @@ func (ec *executionContext) _FwConfig_fwConfigOuts(ctx context.Context, field gr
 	}
 	res := resTmp.([]*gqlmodel.FwConfigRule)
 	fc.Result = res
-	return ec.marshalNFwConfigRule2ᚕᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐFwConfigRuleᚄ(ctx, field.Selections, res)
+	return ec.marshalNFwConfigRule2ᚕᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐFwConfigRuleᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_FwConfig_fwConfigOuts(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -6549,7 +6605,7 @@ func (ec *executionContext) _FwConfig_fwConfigIns(ctx context.Context, field gra
 	}
 	res := resTmp.([]*gqlmodel.FwConfigRule)
 	fc.Result = res
-	return ec.marshalNFwConfigRule2ᚕᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐFwConfigRuleᚄ(ctx, field.Selections, res)
+	return ec.marshalNFwConfigRule2ᚕᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐFwConfigRuleᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_FwConfig_fwConfigIns(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -6776,7 +6832,7 @@ func (ec *executionContext) _FwConfigRule_groups(ctx context.Context, field grap
 	}
 	res := resTmp.([]*gqlmodel.Group)
 	fc.Result = res
-	return ec.marshalOGroup2ᚕᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐGroupᚄ(ctx, field.Selections, res)
+	return ec.marshalOGroup2ᚕᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐGroupᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_FwConfigRule_groups(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -7264,7 +7320,7 @@ func (ec *executionContext) _Mutation_systemConfigSave(ctx context.Context, fiel
 	}
 	res := resTmp.(*gqlmodel.SystemConfig)
 	fc.Result = res
-	return ec.marshalNSystemConfig2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐSystemConfig(ctx, field.Selections, res)
+	return ec.marshalNSystemConfig2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐSystemConfig(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_systemConfigSave(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -7330,7 +7386,7 @@ func (ec *executionContext) _Mutation_systemAadConfigSave(ctx context.Context, f
 	}
 	res := resTmp.(*gqlmodel.AadConfig)
 	fc.Result = res
-	return ec.marshalNAadConfig2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐAadConfig(ctx, field.Selections, res)
+	return ec.marshalNAadConfig2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐAadConfig(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_systemAadConfigSave(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -7398,7 +7454,7 @@ func (ec *executionContext) _Mutation_systemCliApiConfigSave(ctx context.Context
 	}
 	res := resTmp.(*gqlmodel.CliAPIConfig)
 	fc.Result = res
-	return ec.marshalNCliApiConfig2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐCliAPIConfig(ctx, field.Selections, res)
+	return ec.marshalNCliApiConfig2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐCliAPIConfig(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_systemCliApiConfigSave(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -7460,7 +7516,7 @@ func (ec *executionContext) _Mutation_userInvite(ctx context.Context, field grap
 	}
 	res := resTmp.(*gqlmodel.User)
 	fc.Result = res
-	return ec.marshalNUser2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
+	return ec.marshalNUser2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_userInvite(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -7530,7 +7586,7 @@ func (ec *executionContext) _Mutation_serverDelete(ctx context.Context, field gr
 	}
 	res := resTmp.(*gqlmodel.Server)
 	fc.Result = res
-	return ec.marshalNServer2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐServer(ctx, field.Selections, res)
+	return ec.marshalNServer2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐServer(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_serverDelete(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -7598,7 +7654,7 @@ func (ec *executionContext) _Mutation_userDelete(ctx context.Context, field grap
 	}
 	res := resTmp.(*gqlmodel.User)
 	fc.Result = res
-	return ec.marshalNUser2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
+	return ec.marshalNUser2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_userDelete(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -7668,7 +7724,7 @@ func (ec *executionContext) _Mutation_serverSave(ctx context.Context, field grap
 	}
 	res := resTmp.(*gqlmodel.Server)
 	fc.Result = res
-	return ec.marshalNServer2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐServer(ctx, field.Selections, res)
+	return ec.marshalNServer2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐServer(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_serverSave(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -7736,7 +7792,7 @@ func (ec *executionContext) _Mutation_userSave(ctx context.Context, field graphq
 	}
 	res := resTmp.(*gqlmodel.User)
 	fc.Result = res
-	return ec.marshalNUser2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
+	return ec.marshalNUser2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_userSave(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -7806,7 +7862,7 @@ func (ec *executionContext) _Mutation_groupDelete(ctx context.Context, field gra
 	}
 	res := resTmp.(*gqlmodel.Group)
 	fc.Result = res
-	return ec.marshalNGroup2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐGroup(ctx, field.Selections, res)
+	return ec.marshalNGroup2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐGroup(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_groupDelete(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -7868,7 +7924,7 @@ func (ec *executionContext) _Mutation_groupSave(ctx context.Context, field graph
 	}
 	res := resTmp.(*gqlmodel.Group)
 	fc.Result = res
-	return ec.marshalNGroup2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐGroup(ctx, field.Selections, res)
+	return ec.marshalNGroup2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐGroup(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_groupSave(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -7930,7 +7986,7 @@ func (ec *executionContext) _Mutation_userAccessTemplateDelete(ctx context.Conte
 	}
 	res := resTmp.(*gqlmodel.UserAccessTemplate)
 	fc.Result = res
-	return ec.marshalNUserAccessTemplate2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐUserAccessTemplate(ctx, field.Selections, res)
+	return ec.marshalNUserAccessTemplate2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐUserAccessTemplate(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_userAccessTemplateDelete(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -8002,7 +8058,7 @@ func (ec *executionContext) _Mutation_userAccessTemplateSave(ctx context.Context
 	}
 	res := resTmp.(*gqlmodel.UserAccessTemplate)
 	fc.Result = res
-	return ec.marshalNUserAccessTemplate2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐUserAccessTemplate(ctx, field.Selections, res)
+	return ec.marshalNUserAccessTemplate2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐUserAccessTemplate(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_userAccessTemplateSave(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -8074,7 +8130,7 @@ func (ec *executionContext) _Mutation_firewallConfigurationDelete(ctx context.Co
 	}
 	res := resTmp.(*gqlmodel.FwConfig)
 	fc.Result = res
-	return ec.marshalNFwConfig2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐFwConfig(ctx, field.Selections, res)
+	return ec.marshalNFwConfig2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐFwConfig(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_firewallConfigurationDelete(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -8140,7 +8196,7 @@ func (ec *executionContext) _Mutation_firewallConfigurationSave(ctx context.Cont
 	}
 	res := resTmp.(*gqlmodel.FwConfig)
 	fc.Result = res
-	return ec.marshalNFwConfig2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐFwConfig(ctx, field.Selections, res)
+	return ec.marshalNFwConfig2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐFwConfig(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_firewallConfigurationSave(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -8206,7 +8262,7 @@ func (ec *executionContext) _Mutation_userAccessDelete(ctx context.Context, fiel
 	}
 	res := resTmp.(*gqlmodel.UserAccess)
 	fc.Result = res
-	return ec.marshalNUserAccess2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐUserAccess(ctx, field.Selections, res)
+	return ec.marshalNUserAccess2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐUserAccess(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_userAccessDelete(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -8284,7 +8340,7 @@ func (ec *executionContext) _Mutation_userAccessSave(ctx context.Context, field 
 	}
 	res := resTmp.(*gqlmodel.UserAccess)
 	fc.Result = res
-	return ec.marshalNUserAccess2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐUserAccess(ctx, field.Selections, res)
+	return ec.marshalNUserAccess2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐUserAccess(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_userAccessSave(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -8362,7 +8418,7 @@ func (ec *executionContext) _Mutation_userDeviceSaveNote(ctx context.Context, fi
 	}
 	res := resTmp.(*gqlmodel.Access)
 	fc.Result = res
-	return ec.marshalNAccess2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐAccess(ctx, field.Selections, res)
+	return ec.marshalNAccess2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐAccess(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_userDeviceSaveNote(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -8381,6 +8437,8 @@ func (ec *executionContext) fieldContext_Mutation_userDeviceSaveNote(ctx context
 				return ec.fieldContext_Access_ipAddress(ctx, field)
 			case "fqdn":
 				return ec.fieldContext_Access_fqdn(ctx, field)
+			case "additionalHostnames":
+				return ec.fieldContext_Access_additionalHostnames(ctx, field)
 			case "description":
 				return ec.fieldContext_Access_description(ctx, field)
 			case "groups":
@@ -8504,7 +8562,7 @@ func (ec *executionContext) _Mutation_userDeviceCreate(ctx context.Context, fiel
 	}
 	res := resTmp.(*gqlmodel.UserAccessDeviceInfo)
 	fc.Result = res
-	return ec.marshalNUserAccessDeviceInfo2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐUserAccessDeviceInfo(ctx, field.Selections, res)
+	return ec.marshalNUserAccessDeviceInfo2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐUserAccessDeviceInfo(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_userDeviceCreate(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -9056,7 +9114,7 @@ func (ec *executionContext) _Query_monthCostUsage(ctx context.Context, field gra
 	}
 	res := resTmp.([]*gqlmodel.CostUsageMonthItem)
 	fc.Result = res
-	return ec.marshalNCostUsageMonthItem2ᚕᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐCostUsageMonthItemᚄ(ctx, field.Selections, res)
+	return ec.marshalNCostUsageMonthItem2ᚕᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐCostUsageMonthItemᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_monthCostUsage(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -9107,7 +9165,7 @@ func (ec *executionContext) _Query_config(ctx context.Context, field graphql.Col
 	}
 	res := resTmp.(*gqlmodel.ConfigItem)
 	fc.Result = res
-	return ec.marshalNConfigItem2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐConfigItem(ctx, field.Selections, res)
+	return ec.marshalNConfigItem2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐConfigItem(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_config(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -9162,7 +9220,7 @@ func (ec *executionContext) _Query_adminDashboard(ctx context.Context, field gra
 	}
 	res := resTmp.(*gqlmodel.AdminDashboard)
 	fc.Result = res
-	return ec.marshalNAdminDashboard2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐAdminDashboard(ctx, field.Selections, res)
+	return ec.marshalNAdminDashboard2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐAdminDashboard(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_adminDashboard(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -9215,7 +9273,7 @@ func (ec *executionContext) _Query_codelistGroups(ctx context.Context, field gra
 	}
 	res := resTmp.([]*gqlmodel.CodeListItem)
 	fc.Result = res
-	return ec.marshalNCodeListItem2ᚕᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐCodeListItemᚄ(ctx, field.Selections, res)
+	return ec.marshalNCodeListItem2ᚕᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐCodeListItemᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_codelistGroups(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -9264,7 +9322,7 @@ func (ec *executionContext) _Query_codelistFirewalls(ctx context.Context, field 
 	}
 	res := resTmp.([]*gqlmodel.CodeListItem)
 	fc.Result = res
-	return ec.marshalNCodeListItem2ᚕᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐCodeListItemᚄ(ctx, field.Selections, res)
+	return ec.marshalNCodeListItem2ᚕᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐCodeListItemᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_codelistFirewalls(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -9313,7 +9371,7 @@ func (ec *executionContext) _Query_codelistUserAccessTemplates(ctx context.Conte
 	}
 	res := resTmp.([]*gqlmodel.CodeListItem)
 	fc.Result = res
-	return ec.marshalNCodeListItem2ᚕᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐCodeListItemᚄ(ctx, field.Selections, res)
+	return ec.marshalNCodeListItem2ᚕᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐCodeListItemᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_codelistUserAccessTemplates(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -9362,7 +9420,7 @@ func (ec *executionContext) _Query_telemetryLogs(ctx context.Context, field grap
 	}
 	res := resTmp.([]*gqlmodel.LogItem)
 	fc.Result = res
-	return ec.marshalNLogItem2ᚕᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐLogItemᚄ(ctx, field.Selections, res)
+	return ec.marshalNLogItem2ᚕᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐLogItemᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_telemetryLogs(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -9426,7 +9484,7 @@ func (ec *executionContext) _Query_securityLogs(ctx context.Context, field graph
 	}
 	res := resTmp.([]*gqlmodel.LogItem)
 	fc.Result = res
-	return ec.marshalNLogItem2ᚕᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐLogItemᚄ(ctx, field.Selections, res)
+	return ec.marshalNLogItem2ᚕᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐLogItemᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_securityLogs(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -9490,7 +9548,7 @@ func (ec *executionContext) _Query_systemConfig(ctx context.Context, field graph
 	}
 	res := resTmp.(*gqlmodel.SystemConfig)
 	fc.Result = res
-	return ec.marshalNSystemConfig2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐSystemConfig(ctx, field.Selections, res)
+	return ec.marshalNSystemConfig2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐSystemConfig(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_systemConfig(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -9545,7 +9603,7 @@ func (ec *executionContext) _Query_users(ctx context.Context, field graphql.Coll
 	}
 	res := resTmp.([]*gqlmodel.User)
 	fc.Result = res
-	return ec.marshalNUser2ᚕᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐUserᚄ(ctx, field.Selections, res)
+	return ec.marshalNUser2ᚕᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐUserᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_users(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -9615,7 +9673,7 @@ func (ec *executionContext) _Query_servers(ctx context.Context, field graphql.Co
 	}
 	res := resTmp.([]*gqlmodel.Server)
 	fc.Result = res
-	return ec.marshalNServer2ᚕᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐServerᚄ(ctx, field.Selections, res)
+	return ec.marshalNServer2ᚕᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐServerᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_servers(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -9683,7 +9741,7 @@ func (ec *executionContext) _Query_me(ctx context.Context, field graphql.Collect
 	}
 	res := resTmp.(*gqlmodel.User)
 	fc.Result = res
-	return ec.marshalNUser2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
+	return ec.marshalNUser2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_me(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -9742,7 +9800,7 @@ func (ec *executionContext) _Query_server(ctx context.Context, field graphql.Col
 	}
 	res := resTmp.(*gqlmodel.Server)
 	fc.Result = res
-	return ec.marshalNServer2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐServer(ctx, field.Selections, res)
+	return ec.marshalNServer2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐServer(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_server(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -9810,7 +9868,7 @@ func (ec *executionContext) _Query_user(ctx context.Context, field graphql.Colle
 	}
 	res := resTmp.(*gqlmodel.User)
 	fc.Result = res
-	return ec.marshalNUser2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
+	return ec.marshalNUser2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_user(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -9880,7 +9938,7 @@ func (ec *executionContext) _Query_group(ctx context.Context, field graphql.Coll
 	}
 	res := resTmp.(*gqlmodel.Group)
 	fc.Result = res
-	return ec.marshalNGroup2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐGroup(ctx, field.Selections, res)
+	return ec.marshalNGroup2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐGroup(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_group(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -9942,7 +10000,7 @@ func (ec *executionContext) _Query_groups(ctx context.Context, field graphql.Col
 	}
 	res := resTmp.([]*gqlmodel.Group)
 	fc.Result = res
-	return ec.marshalNGroup2ᚕᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐGroupᚄ(ctx, field.Selections, res)
+	return ec.marshalNGroup2ᚕᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐGroupᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_groups(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -10004,7 +10062,7 @@ func (ec *executionContext) _Query_accessListenerTypes(ctx context.Context, fiel
 	}
 	res := resTmp.([]*gqlmodel.AccessListenerType)
 	fc.Result = res
-	return ec.marshalNAccessListenerType2ᚕᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐAccessListenerTypeᚄ(ctx, field.Selections, res)
+	return ec.marshalNAccessListenerType2ᚕᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐAccessListenerTypeᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_accessListenerTypes(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -10066,7 +10124,7 @@ func (ec *executionContext) _Query_userAccessTemplate(ctx context.Context, field
 	}
 	res := resTmp.(*gqlmodel.UserAccessTemplate)
 	fc.Result = res
-	return ec.marshalNUserAccessTemplate2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐUserAccessTemplate(ctx, field.Selections, res)
+	return ec.marshalNUserAccessTemplate2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐUserAccessTemplate(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_userAccessTemplate(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -10138,7 +10196,7 @@ func (ec *executionContext) _Query_userAccessTemplates(ctx context.Context, fiel
 	}
 	res := resTmp.([]*gqlmodel.UserAccessTemplate)
 	fc.Result = res
-	return ec.marshalNUserAccessTemplate2ᚕᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐUserAccessTemplateᚄ(ctx, field.Selections, res)
+	return ec.marshalNUserAccessTemplate2ᚕᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐUserAccessTemplateᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_userAccessTemplates(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -10210,7 +10268,7 @@ func (ec *executionContext) _Query_firewallConfiguration(ctx context.Context, fi
 	}
 	res := resTmp.(*gqlmodel.FwConfig)
 	fc.Result = res
-	return ec.marshalNFwConfig2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐFwConfig(ctx, field.Selections, res)
+	return ec.marshalNFwConfig2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐFwConfig(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_firewallConfiguration(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -10276,7 +10334,7 @@ func (ec *executionContext) _Query_firewallConfigurations(ctx context.Context, f
 	}
 	res := resTmp.([]*gqlmodel.FwConfig)
 	fc.Result = res
-	return ec.marshalNFwConfig2ᚕᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐFwConfigᚄ(ctx, field.Selections, res)
+	return ec.marshalNFwConfig2ᚕᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐFwConfigᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_firewallConfigurations(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -10643,7 +10701,7 @@ func (ec *executionContext) _Server_access(ctx context.Context, field graphql.Co
 	}
 	res := resTmp.(*gqlmodel.Access)
 	fc.Result = res
-	return ec.marshalNAccess2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐAccess(ctx, field.Selections, res)
+	return ec.marshalNAccess2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐAccess(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Server_access(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -10662,6 +10720,8 @@ func (ec *executionContext) fieldContext_Server_access(ctx context.Context, fiel
 				return ec.fieldContext_Access_ipAddress(ctx, field)
 			case "fqdn":
 				return ec.fieldContext_Access_fqdn(ctx, field)
+			case "additionalHostnames":
+				return ec.fieldContext_Access_additionalHostnames(ctx, field)
 			case "description":
 				return ec.fieldContext_Access_description(ctx, field)
 			case "groups":
@@ -10721,7 +10781,7 @@ func (ec *executionContext) _Server_serverOSAutoUpdatePolicy(ctx context.Context
 	}
 	res := resTmp.(*gqlmodel.ServerOSAutoUpdatePolicy)
 	fc.Result = res
-	return ec.marshalNServerOSAutoUpdatePolicy2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐServerOSAutoUpdatePolicy(ctx, field.Selections, res)
+	return ec.marshalNServerOSAutoUpdatePolicy2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐServerOSAutoUpdatePolicy(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Server_serverOSAutoUpdatePolicy(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -10906,7 +10966,7 @@ func (ec *executionContext) _ServerForAccess_listeners(ctx context.Context, fiel
 	}
 	res := resTmp.([]*gqlmodel.AccessListener)
 	fc.Result = res
-	return ec.marshalNAccessListener2ᚕᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐAccessListenerᚄ(ctx, field.Selections, res)
+	return ec.marshalNAccessListener2ᚕᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐAccessListenerᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ServerForAccess_listeners(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -10961,7 +11021,7 @@ func (ec *executionContext) _ServerForAccess_statistics(ctx context.Context, fie
 	}
 	res := resTmp.(*gqlmodel.AccessStatistic)
 	fc.Result = res
-	return ec.marshalOAccessStatistic2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐAccessStatistic(ctx, field.Selections, res)
+	return ec.marshalOAccessStatistic2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐAccessStatistic(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ServerForAccess_statistics(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -11279,7 +11339,7 @@ func (ec *executionContext) _SystemConfig_lighthouses(ctx context.Context, field
 	}
 	res := resTmp.([]*gqlmodel.Lighthouse)
 	fc.Result = res
-	return ec.marshalNLighthouse2ᚕᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐLighthouse(ctx, field.Selections, res)
+	return ec.marshalNLighthouse2ᚕᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐLighthouse(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_SystemConfig_lighthouses(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -11375,7 +11435,7 @@ func (ec *executionContext) _SystemConfig_aadConfig(ctx context.Context, field g
 	}
 	res := resTmp.(*gqlmodel.AadConfig)
 	fc.Result = res
-	return ec.marshalNAadConfig2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐAadConfig(ctx, field.Selections, res)
+	return ec.marshalNAadConfig2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐAadConfig(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_SystemConfig_aadConfig(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -11433,7 +11493,7 @@ func (ec *executionContext) _SystemConfig_cliApiConfig(ctx context.Context, fiel
 	}
 	res := resTmp.(*gqlmodel.CliAPIConfig)
 	fc.Result = res
-	return ec.marshalNCliApiConfig2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐCliAPIConfig(ctx, field.Selections, res)
+	return ec.marshalNCliApiConfig2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐCliAPIConfig(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_SystemConfig_cliApiConfig(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -11658,7 +11718,7 @@ func (ec *executionContext) _User_userAccesses(ctx context.Context, field graphq
 	}
 	res := resTmp.([]*gqlmodel.UserAccess)
 	fc.Result = res
-	return ec.marshalNUserAccess2ᚕᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐUserAccessᚄ(ctx, field.Selections, res)
+	return ec.marshalNUserAccess2ᚕᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐUserAccessᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_User_userAccesses(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -11940,7 +12000,7 @@ func (ec *executionContext) _UserAccess_groups(ctx context.Context, field graphq
 	}
 	res := resTmp.([]*gqlmodel.Group)
 	fc.Result = res
-	return ec.marshalNGroup2ᚕᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐGroupᚄ(ctx, field.Selections, res)
+	return ec.marshalNGroup2ᚕᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐGroupᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_UserAccess_groups(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -11992,7 +12052,7 @@ func (ec *executionContext) _UserAccess_fwConfig(ctx context.Context, field grap
 	}
 	res := resTmp.(*gqlmodel.FwConfig)
 	fc.Result = res
-	return ec.marshalNFwConfig2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐFwConfig(ctx, field.Selections, res)
+	return ec.marshalNFwConfig2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐFwConfig(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_UserAccess_fwConfig(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -12180,7 +12240,7 @@ func (ec *executionContext) _UserAccess_userAccessTemplate(ctx context.Context, 
 	}
 	res := resTmp.(*gqlmodel.UserAccessTemplate)
 	fc.Result = res
-	return ec.marshalNUserAccessTemplate2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐUserAccessTemplate(ctx, field.Selections, res)
+	return ec.marshalNUserAccessTemplate2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐUserAccessTemplate(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_UserAccess_userAccessTemplate(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -12242,7 +12302,7 @@ func (ec *executionContext) _UserAccess_accesses(ctx context.Context, field grap
 	}
 	res := resTmp.([]*gqlmodel.Access)
 	fc.Result = res
-	return ec.marshalNAccess2ᚕᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐAccessᚄ(ctx, field.Selections, res)
+	return ec.marshalNAccess2ᚕᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐAccessᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_UserAccess_accesses(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -12261,6 +12321,8 @@ func (ec *executionContext) fieldContext_UserAccess_accesses(ctx context.Context
 				return ec.fieldContext_Access_ipAddress(ctx, field)
 			case "fqdn":
 				return ec.fieldContext_Access_fqdn(ctx, field)
+			case "additionalHostnames":
+				return ec.fieldContext_Access_additionalHostnames(ctx, field)
 			case "description":
 				return ec.fieldContext_Access_description(ctx, field)
 			case "groups":
@@ -12320,7 +12382,7 @@ func (ec *executionContext) _UserAccess_serversForAccess(ctx context.Context, fi
 	}
 	res := resTmp.([]*gqlmodel.ServerForAccess)
 	fc.Result = res
-	return ec.marshalNServerForAccess2ᚕᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐServerForAccessᚄ(ctx, field.Selections, res)
+	return ec.marshalNServerForAccess2ᚕᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐServerForAccessᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_UserAccess_serversForAccess(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -12376,7 +12438,7 @@ func (ec *executionContext) _UserAccessDeviceInfo_access(ctx context.Context, fi
 	}
 	res := resTmp.(*gqlmodel.Access)
 	fc.Result = res
-	return ec.marshalNAccess2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐAccess(ctx, field.Selections, res)
+	return ec.marshalNAccess2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐAccess(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_UserAccessDeviceInfo_access(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -12395,6 +12457,8 @@ func (ec *executionContext) fieldContext_UserAccessDeviceInfo_access(ctx context
 				return ec.fieldContext_Access_ipAddress(ctx, field)
 			case "fqdn":
 				return ec.fieldContext_Access_fqdn(ctx, field)
+			case "additionalHostnames":
+				return ec.fieldContext_Access_additionalHostnames(ctx, field)
 			case "description":
 				return ec.fieldContext_Access_description(ctx, field)
 			case "groups":
@@ -12803,7 +12867,7 @@ func (ec *executionContext) _UserAccessTemplate_groups(ctx context.Context, fiel
 	}
 	res := resTmp.([]*gqlmodel.Group)
 	fc.Result = res
-	return ec.marshalNGroup2ᚕᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐGroupᚄ(ctx, field.Selections, res)
+	return ec.marshalNGroup2ᚕᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐGroupᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_UserAccessTemplate_groups(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -12855,7 +12919,7 @@ func (ec *executionContext) _UserAccessTemplate_fwConfig(ctx context.Context, fi
 	}
 	res := resTmp.(*gqlmodel.FwConfig)
 	fc.Result = res
-	return ec.marshalNFwConfig2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐFwConfig(ctx, field.Selections, res)
+	return ec.marshalNFwConfig2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐFwConfig(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_UserAccessTemplate_fwConfig(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -15178,7 +15242,7 @@ func (ec *executionContext) unmarshalInputFwConfigData(ctx context.Context, obj 
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("fwConfigOuts"))
-			it.FwConfigOuts, err = ec.unmarshalNFwConfigRuleData2ᚕᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐFwConfigRuleDataᚄ(ctx, v)
+			it.FwConfigOuts, err = ec.unmarshalNFwConfigRuleData2ᚕᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐFwConfigRuleDataᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -15186,7 +15250,7 @@ func (ec *executionContext) unmarshalInputFwConfigData(ctx context.Context, obj 
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("fwConfigIns"))
-			it.FwConfigIns, err = ec.unmarshalNFwConfigRuleData2ᚕᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐFwConfigRuleDataᚄ(ctx, v)
+			it.FwConfigIns, err = ec.unmarshalNFwConfigRuleData2ᚕᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐFwConfigRuleDataᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -15238,7 +15302,7 @@ func (ec *executionContext) unmarshalInputFwConfigRuleData(ctx context.Context, 
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("groups"))
-			it.Groups, err = ec.unmarshalOGroupData2ᚕᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐGroupDataᚄ(ctx, v)
+			it.Groups, err = ec.unmarshalOGroupData2ᚕᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐGroupDataᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -15367,7 +15431,7 @@ func (ec *executionContext) unmarshalInputServerAccessData(ctx context.Context, 
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"ipAddress", "description", "groupsIds", "fwConfigId", "validTo", "listeners", "punchBack", "restrictiveNetwork"}
+	fieldsInOrder := [...]string{"ipAddress", "additionalHostnames", "description", "groupsIds", "fwConfigId", "validTo", "listeners", "punchBack", "restrictiveNetwork"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -15379,6 +15443,14 @@ func (ec *executionContext) unmarshalInputServerAccessData(ctx context.Context, 
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ipAddress"))
 			it.IPAddress, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "additionalHostnames":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("additionalHostnames"))
+			it.AdditionalHostnames, err = ec.unmarshalNString2ᚕstringᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -15418,7 +15490,7 @@ func (ec *executionContext) unmarshalInputServerAccessData(ctx context.Context, 
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("listeners"))
-			it.Listeners, err = ec.unmarshalNAccessListenerData2ᚕᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐAccessListenerDataᚄ(ctx, v)
+			it.Listeners, err = ec.unmarshalNAccessListenerData2ᚕᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐAccessListenerDataᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -15494,7 +15566,7 @@ func (ec *executionContext) unmarshalInputServerData(ctx context.Context, obj in
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("access"))
-			it.Access, err = ec.unmarshalOServerAccessData2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐServerAccessData(ctx, v)
+			it.Access, err = ec.unmarshalOServerAccessData2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐServerAccessData(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -15502,7 +15574,7 @@ func (ec *executionContext) unmarshalInputServerData(ctx context.Context, obj in
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("osAutoUpdatePolicy"))
-			it.OsAutoUpdatePolicy, err = ec.unmarshalOServerOSAutoUpdatePolicyData2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐServerOSAutoUpdatePolicyData(ctx, v)
+			it.OsAutoUpdatePolicy, err = ec.unmarshalOServerOSAutoUpdatePolicyData2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐServerOSAutoUpdatePolicyData(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -15979,6 +16051,13 @@ func (ec *executionContext) _Access(ctx context.Context, sel ast.SelectionSet, o
 		case "fqdn":
 
 			out.Values[i] = ec._Access_fqdn(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "additionalHostnames":
+
+			out.Values[i] = ec._Access_additionalHostnames(ctx, field, obj)
 
 			if out.Values[i] == graphql.Null {
 				invalids++
@@ -18337,11 +18416,11 @@ func (ec *executionContext) ___Type(ctx context.Context, sel ast.SelectionSet, o
 
 // region    ***************************** type.gotpl *****************************
 
-func (ec *executionContext) marshalNAadConfig2githubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐAadConfig(ctx context.Context, sel ast.SelectionSet, v gqlmodel.AadConfig) graphql.Marshaler {
+func (ec *executionContext) marshalNAadConfig2githubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐAadConfig(ctx context.Context, sel ast.SelectionSet, v gqlmodel.AadConfig) graphql.Marshaler {
 	return ec._AadConfig(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNAadConfig2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐAadConfig(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.AadConfig) graphql.Marshaler {
+func (ec *executionContext) marshalNAadConfig2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐAadConfig(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.AadConfig) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -18351,16 +18430,16 @@ func (ec *executionContext) marshalNAadConfig2ᚖgithubᚗcomᚋcloudfieldczᚋn
 	return ec._AadConfig(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNAadConfigData2githubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐAadConfigData(ctx context.Context, v interface{}) (gqlmodel.AadConfigData, error) {
+func (ec *executionContext) unmarshalNAadConfigData2githubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐAadConfigData(ctx context.Context, v interface{}) (gqlmodel.AadConfigData, error) {
 	res, err := ec.unmarshalInputAadConfigData(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNAccess2githubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐAccess(ctx context.Context, sel ast.SelectionSet, v gqlmodel.Access) graphql.Marshaler {
+func (ec *executionContext) marshalNAccess2githubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐAccess(ctx context.Context, sel ast.SelectionSet, v gqlmodel.Access) graphql.Marshaler {
 	return ec._Access(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNAccess2ᚕᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐAccessᚄ(ctx context.Context, sel ast.SelectionSet, v []*gqlmodel.Access) graphql.Marshaler {
+func (ec *executionContext) marshalNAccess2ᚕᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐAccessᚄ(ctx context.Context, sel ast.SelectionSet, v []*gqlmodel.Access) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -18384,7 +18463,7 @@ func (ec *executionContext) marshalNAccess2ᚕᚖgithubᚗcomᚋcloudfieldczᚋn
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNAccess2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐAccess(ctx, sel, v[i])
+			ret[i] = ec.marshalNAccess2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐAccess(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -18404,7 +18483,7 @@ func (ec *executionContext) marshalNAccess2ᚕᚖgithubᚗcomᚋcloudfieldczᚋn
 	return ret
 }
 
-func (ec *executionContext) marshalNAccess2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐAccess(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.Access) graphql.Marshaler {
+func (ec *executionContext) marshalNAccess2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐAccess(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.Access) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -18414,12 +18493,12 @@ func (ec *executionContext) marshalNAccess2ᚖgithubᚗcomᚋcloudfieldczᚋnebu
 	return ec._Access(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNAccessDeviceData2githubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐAccessDeviceData(ctx context.Context, v interface{}) (gqlmodel.AccessDeviceData, error) {
+func (ec *executionContext) unmarshalNAccessDeviceData2githubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐAccessDeviceData(ctx context.Context, v interface{}) (gqlmodel.AccessDeviceData, error) {
 	res, err := ec.unmarshalInputAccessDeviceData(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNAccessListener2ᚕᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐAccessListenerᚄ(ctx context.Context, sel ast.SelectionSet, v []*gqlmodel.AccessListener) graphql.Marshaler {
+func (ec *executionContext) marshalNAccessListener2ᚕᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐAccessListenerᚄ(ctx context.Context, sel ast.SelectionSet, v []*gqlmodel.AccessListener) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -18443,7 +18522,7 @@ func (ec *executionContext) marshalNAccessListener2ᚕᚖgithubᚗcomᚋcloudfie
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNAccessListener2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐAccessListener(ctx, sel, v[i])
+			ret[i] = ec.marshalNAccessListener2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐAccessListener(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -18463,7 +18542,7 @@ func (ec *executionContext) marshalNAccessListener2ᚕᚖgithubᚗcomᚋcloudfie
 	return ret
 }
 
-func (ec *executionContext) marshalNAccessListener2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐAccessListener(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.AccessListener) graphql.Marshaler {
+func (ec *executionContext) marshalNAccessListener2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐAccessListener(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.AccessListener) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -18473,7 +18552,7 @@ func (ec *executionContext) marshalNAccessListener2ᚖgithubᚗcomᚋcloudfieldc
 	return ec._AccessListener(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNAccessListenerData2ᚕᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐAccessListenerDataᚄ(ctx context.Context, v interface{}) ([]*gqlmodel.AccessListenerData, error) {
+func (ec *executionContext) unmarshalNAccessListenerData2ᚕᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐAccessListenerDataᚄ(ctx context.Context, v interface{}) ([]*gqlmodel.AccessListenerData, error) {
 	var vSlice []interface{}
 	if v != nil {
 		vSlice = graphql.CoerceList(v)
@@ -18482,7 +18561,7 @@ func (ec *executionContext) unmarshalNAccessListenerData2ᚕᚖgithubᚗcomᚋcl
 	res := make([]*gqlmodel.AccessListenerData, len(vSlice))
 	for i := range vSlice {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalNAccessListenerData2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐAccessListenerData(ctx, vSlice[i])
+		res[i], err = ec.unmarshalNAccessListenerData2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐAccessListenerData(ctx, vSlice[i])
 		if err != nil {
 			return nil, err
 		}
@@ -18490,12 +18569,12 @@ func (ec *executionContext) unmarshalNAccessListenerData2ᚕᚖgithubᚗcomᚋcl
 	return res, nil
 }
 
-func (ec *executionContext) unmarshalNAccessListenerData2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐAccessListenerData(ctx context.Context, v interface{}) (*gqlmodel.AccessListenerData, error) {
+func (ec *executionContext) unmarshalNAccessListenerData2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐAccessListenerData(ctx context.Context, v interface{}) (*gqlmodel.AccessListenerData, error) {
 	res, err := ec.unmarshalInputAccessListenerData(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNAccessListenerType2ᚕᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐAccessListenerTypeᚄ(ctx context.Context, sel ast.SelectionSet, v []*gqlmodel.AccessListenerType) graphql.Marshaler {
+func (ec *executionContext) marshalNAccessListenerType2ᚕᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐAccessListenerTypeᚄ(ctx context.Context, sel ast.SelectionSet, v []*gqlmodel.AccessListenerType) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -18519,7 +18598,7 @@ func (ec *executionContext) marshalNAccessListenerType2ᚕᚖgithubᚗcomᚋclou
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNAccessListenerType2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐAccessListenerType(ctx, sel, v[i])
+			ret[i] = ec.marshalNAccessListenerType2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐAccessListenerType(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -18539,7 +18618,7 @@ func (ec *executionContext) marshalNAccessListenerType2ᚕᚖgithubᚗcomᚋclou
 	return ret
 }
 
-func (ec *executionContext) marshalNAccessListenerType2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐAccessListenerType(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.AccessListenerType) graphql.Marshaler {
+func (ec *executionContext) marshalNAccessListenerType2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐAccessListenerType(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.AccessListenerType) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -18549,11 +18628,11 @@ func (ec *executionContext) marshalNAccessListenerType2ᚖgithubᚗcomᚋcloudfi
 	return ec._AccessListenerType(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNAdminDashboard2githubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐAdminDashboard(ctx context.Context, sel ast.SelectionSet, v gqlmodel.AdminDashboard) graphql.Marshaler {
+func (ec *executionContext) marshalNAdminDashboard2githubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐAdminDashboard(ctx context.Context, sel ast.SelectionSet, v gqlmodel.AdminDashboard) graphql.Marshaler {
 	return ec._AdminDashboard(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNAdminDashboard2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐAdminDashboard(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.AdminDashboard) graphql.Marshaler {
+func (ec *executionContext) marshalNAdminDashboard2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐAdminDashboard(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.AdminDashboard) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -18578,11 +18657,11 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 	return res
 }
 
-func (ec *executionContext) marshalNCliApiConfig2githubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐCliAPIConfig(ctx context.Context, sel ast.SelectionSet, v gqlmodel.CliAPIConfig) graphql.Marshaler {
+func (ec *executionContext) marshalNCliApiConfig2githubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐCliAPIConfig(ctx context.Context, sel ast.SelectionSet, v gqlmodel.CliAPIConfig) graphql.Marshaler {
 	return ec._CliApiConfig(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNCliApiConfig2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐCliAPIConfig(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.CliAPIConfig) graphql.Marshaler {
+func (ec *executionContext) marshalNCliApiConfig2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐCliAPIConfig(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.CliAPIConfig) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -18592,12 +18671,12 @@ func (ec *executionContext) marshalNCliApiConfig2ᚖgithubᚗcomᚋcloudfieldcz�
 	return ec._CliApiConfig(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNCliApiConfigData2githubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐCliAPIConfigData(ctx context.Context, v interface{}) (gqlmodel.CliAPIConfigData, error) {
+func (ec *executionContext) unmarshalNCliApiConfigData2githubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐCliAPIConfigData(ctx context.Context, v interface{}) (gqlmodel.CliAPIConfigData, error) {
 	res, err := ec.unmarshalInputCliApiConfigData(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNCodeListItem2ᚕᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐCodeListItemᚄ(ctx context.Context, sel ast.SelectionSet, v []*gqlmodel.CodeListItem) graphql.Marshaler {
+func (ec *executionContext) marshalNCodeListItem2ᚕᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐCodeListItemᚄ(ctx context.Context, sel ast.SelectionSet, v []*gqlmodel.CodeListItem) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -18621,7 +18700,7 @@ func (ec *executionContext) marshalNCodeListItem2ᚕᚖgithubᚗcomᚋcloudfield
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNCodeListItem2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐCodeListItem(ctx, sel, v[i])
+			ret[i] = ec.marshalNCodeListItem2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐCodeListItem(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -18641,7 +18720,7 @@ func (ec *executionContext) marshalNCodeListItem2ᚕᚖgithubᚗcomᚋcloudfield
 	return ret
 }
 
-func (ec *executionContext) marshalNCodeListItem2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐCodeListItem(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.CodeListItem) graphql.Marshaler {
+func (ec *executionContext) marshalNCodeListItem2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐCodeListItem(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.CodeListItem) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -18651,11 +18730,11 @@ func (ec *executionContext) marshalNCodeListItem2ᚖgithubᚗcomᚋcloudfieldcz�
 	return ec._CodeListItem(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNConfigItem2githubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐConfigItem(ctx context.Context, sel ast.SelectionSet, v gqlmodel.ConfigItem) graphql.Marshaler {
+func (ec *executionContext) marshalNConfigItem2githubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐConfigItem(ctx context.Context, sel ast.SelectionSet, v gqlmodel.ConfigItem) graphql.Marshaler {
 	return ec._ConfigItem(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNConfigItem2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐConfigItem(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.ConfigItem) graphql.Marshaler {
+func (ec *executionContext) marshalNConfigItem2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐConfigItem(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.ConfigItem) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -18665,7 +18744,7 @@ func (ec *executionContext) marshalNConfigItem2ᚖgithubᚗcomᚋcloudfieldczᚋ
 	return ec._ConfigItem(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNCostUsageItem2ᚕᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐCostUsageItemᚄ(ctx context.Context, sel ast.SelectionSet, v []*gqlmodel.CostUsageItem) graphql.Marshaler {
+func (ec *executionContext) marshalNCostUsageItem2ᚕᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐCostUsageItemᚄ(ctx context.Context, sel ast.SelectionSet, v []*gqlmodel.CostUsageItem) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -18689,7 +18768,7 @@ func (ec *executionContext) marshalNCostUsageItem2ᚕᚖgithubᚗcomᚋcloudfiel
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNCostUsageItem2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐCostUsageItem(ctx, sel, v[i])
+			ret[i] = ec.marshalNCostUsageItem2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐCostUsageItem(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -18709,7 +18788,7 @@ func (ec *executionContext) marshalNCostUsageItem2ᚕᚖgithubᚗcomᚋcloudfiel
 	return ret
 }
 
-func (ec *executionContext) marshalNCostUsageItem2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐCostUsageItem(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.CostUsageItem) graphql.Marshaler {
+func (ec *executionContext) marshalNCostUsageItem2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐCostUsageItem(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.CostUsageItem) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -18719,7 +18798,7 @@ func (ec *executionContext) marshalNCostUsageItem2ᚖgithubᚗcomᚋcloudfieldcz
 	return ec._CostUsageItem(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNCostUsageMonthItem2ᚕᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐCostUsageMonthItemᚄ(ctx context.Context, sel ast.SelectionSet, v []*gqlmodel.CostUsageMonthItem) graphql.Marshaler {
+func (ec *executionContext) marshalNCostUsageMonthItem2ᚕᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐCostUsageMonthItemᚄ(ctx context.Context, sel ast.SelectionSet, v []*gqlmodel.CostUsageMonthItem) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -18743,7 +18822,7 @@ func (ec *executionContext) marshalNCostUsageMonthItem2ᚕᚖgithubᚗcomᚋclou
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNCostUsageMonthItem2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐCostUsageMonthItem(ctx, sel, v[i])
+			ret[i] = ec.marshalNCostUsageMonthItem2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐCostUsageMonthItem(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -18763,7 +18842,7 @@ func (ec *executionContext) marshalNCostUsageMonthItem2ᚕᚖgithubᚗcomᚋclou
 	return ret
 }
 
-func (ec *executionContext) marshalNCostUsageMonthItem2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐCostUsageMonthItem(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.CostUsageMonthItem) graphql.Marshaler {
+func (ec *executionContext) marshalNCostUsageMonthItem2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐCostUsageMonthItem(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.CostUsageMonthItem) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -18803,11 +18882,11 @@ func (ec *executionContext) marshalNFloat2float64(ctx context.Context, sel ast.S
 	return graphql.WrapContextMarshaler(ctx, res)
 }
 
-func (ec *executionContext) marshalNFwConfig2githubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐFwConfig(ctx context.Context, sel ast.SelectionSet, v gqlmodel.FwConfig) graphql.Marshaler {
+func (ec *executionContext) marshalNFwConfig2githubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐFwConfig(ctx context.Context, sel ast.SelectionSet, v gqlmodel.FwConfig) graphql.Marshaler {
 	return ec._FwConfig(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNFwConfig2ᚕᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐFwConfigᚄ(ctx context.Context, sel ast.SelectionSet, v []*gqlmodel.FwConfig) graphql.Marshaler {
+func (ec *executionContext) marshalNFwConfig2ᚕᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐFwConfigᚄ(ctx context.Context, sel ast.SelectionSet, v []*gqlmodel.FwConfig) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -18831,7 +18910,7 @@ func (ec *executionContext) marshalNFwConfig2ᚕᚖgithubᚗcomᚋcloudfieldcz�
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNFwConfig2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐFwConfig(ctx, sel, v[i])
+			ret[i] = ec.marshalNFwConfig2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐFwConfig(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -18851,7 +18930,7 @@ func (ec *executionContext) marshalNFwConfig2ᚕᚖgithubᚗcomᚋcloudfieldcz�
 	return ret
 }
 
-func (ec *executionContext) marshalNFwConfig2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐFwConfig(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.FwConfig) graphql.Marshaler {
+func (ec *executionContext) marshalNFwConfig2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐFwConfig(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.FwConfig) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -18861,12 +18940,12 @@ func (ec *executionContext) marshalNFwConfig2ᚖgithubᚗcomᚋcloudfieldczᚋne
 	return ec._FwConfig(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNFwConfigData2githubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐFwConfigData(ctx context.Context, v interface{}) (gqlmodel.FwConfigData, error) {
+func (ec *executionContext) unmarshalNFwConfigData2githubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐFwConfigData(ctx context.Context, v interface{}) (gqlmodel.FwConfigData, error) {
 	res, err := ec.unmarshalInputFwConfigData(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNFwConfigRule2ᚕᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐFwConfigRuleᚄ(ctx context.Context, sel ast.SelectionSet, v []*gqlmodel.FwConfigRule) graphql.Marshaler {
+func (ec *executionContext) marshalNFwConfigRule2ᚕᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐFwConfigRuleᚄ(ctx context.Context, sel ast.SelectionSet, v []*gqlmodel.FwConfigRule) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -18890,7 +18969,7 @@ func (ec *executionContext) marshalNFwConfigRule2ᚕᚖgithubᚗcomᚋcloudfield
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNFwConfigRule2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐFwConfigRule(ctx, sel, v[i])
+			ret[i] = ec.marshalNFwConfigRule2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐFwConfigRule(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -18910,7 +18989,7 @@ func (ec *executionContext) marshalNFwConfigRule2ᚕᚖgithubᚗcomᚋcloudfield
 	return ret
 }
 
-func (ec *executionContext) marshalNFwConfigRule2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐFwConfigRule(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.FwConfigRule) graphql.Marshaler {
+func (ec *executionContext) marshalNFwConfigRule2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐFwConfigRule(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.FwConfigRule) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -18920,7 +18999,7 @@ func (ec *executionContext) marshalNFwConfigRule2ᚖgithubᚗcomᚋcloudfieldcz�
 	return ec._FwConfigRule(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNFwConfigRuleData2ᚕᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐFwConfigRuleDataᚄ(ctx context.Context, v interface{}) ([]*gqlmodel.FwConfigRuleData, error) {
+func (ec *executionContext) unmarshalNFwConfigRuleData2ᚕᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐFwConfigRuleDataᚄ(ctx context.Context, v interface{}) ([]*gqlmodel.FwConfigRuleData, error) {
 	var vSlice []interface{}
 	if v != nil {
 		vSlice = graphql.CoerceList(v)
@@ -18929,7 +19008,7 @@ func (ec *executionContext) unmarshalNFwConfigRuleData2ᚕᚖgithubᚗcomᚋclou
 	res := make([]*gqlmodel.FwConfigRuleData, len(vSlice))
 	for i := range vSlice {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalNFwConfigRuleData2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐFwConfigRuleData(ctx, vSlice[i])
+		res[i], err = ec.unmarshalNFwConfigRuleData2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐFwConfigRuleData(ctx, vSlice[i])
 		if err != nil {
 			return nil, err
 		}
@@ -18937,16 +19016,16 @@ func (ec *executionContext) unmarshalNFwConfigRuleData2ᚕᚖgithubᚗcomᚋclou
 	return res, nil
 }
 
-func (ec *executionContext) unmarshalNFwConfigRuleData2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐFwConfigRuleData(ctx context.Context, v interface{}) (*gqlmodel.FwConfigRuleData, error) {
+func (ec *executionContext) unmarshalNFwConfigRuleData2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐFwConfigRuleData(ctx context.Context, v interface{}) (*gqlmodel.FwConfigRuleData, error) {
 	res, err := ec.unmarshalInputFwConfigRuleData(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNGroup2githubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐGroup(ctx context.Context, sel ast.SelectionSet, v gqlmodel.Group) graphql.Marshaler {
+func (ec *executionContext) marshalNGroup2githubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐGroup(ctx context.Context, sel ast.SelectionSet, v gqlmodel.Group) graphql.Marshaler {
 	return ec._Group(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNGroup2ᚕᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐGroupᚄ(ctx context.Context, sel ast.SelectionSet, v []*gqlmodel.Group) graphql.Marshaler {
+func (ec *executionContext) marshalNGroup2ᚕᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐGroupᚄ(ctx context.Context, sel ast.SelectionSet, v []*gqlmodel.Group) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -18970,7 +19049,7 @@ func (ec *executionContext) marshalNGroup2ᚕᚖgithubᚗcomᚋcloudfieldczᚋne
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNGroup2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐGroup(ctx, sel, v[i])
+			ret[i] = ec.marshalNGroup2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐGroup(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -18990,7 +19069,7 @@ func (ec *executionContext) marshalNGroup2ᚕᚖgithubᚗcomᚋcloudfieldczᚋne
 	return ret
 }
 
-func (ec *executionContext) marshalNGroup2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐGroup(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.Group) graphql.Marshaler {
+func (ec *executionContext) marshalNGroup2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐGroup(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.Group) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -19000,12 +19079,12 @@ func (ec *executionContext) marshalNGroup2ᚖgithubᚗcomᚋcloudfieldczᚋnebul
 	return ec._Group(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNGroupData2githubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐGroupData(ctx context.Context, v interface{}) (gqlmodel.GroupData, error) {
+func (ec *executionContext) unmarshalNGroupData2githubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐGroupData(ctx context.Context, v interface{}) (gqlmodel.GroupData, error) {
 	res, err := ec.unmarshalInputGroupData(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNGroupData2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐGroupData(ctx context.Context, v interface{}) (*gqlmodel.GroupData, error) {
+func (ec *executionContext) unmarshalNGroupData2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐGroupData(ctx context.Context, v interface{}) (*gqlmodel.GroupData, error) {
 	res, err := ec.unmarshalInputGroupData(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
@@ -19057,12 +19136,12 @@ func (ec *executionContext) marshalNInt2ᚕintᚄ(ctx context.Context, sel ast.S
 	return ret
 }
 
-func (ec *executionContext) unmarshalNInviteUserData2githubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐInviteUserData(ctx context.Context, v interface{}) (gqlmodel.InviteUserData, error) {
+func (ec *executionContext) unmarshalNInviteUserData2githubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐInviteUserData(ctx context.Context, v interface{}) (gqlmodel.InviteUserData, error) {
 	res, err := ec.unmarshalInputInviteUserData(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNLighthouse2ᚕᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐLighthouse(ctx context.Context, sel ast.SelectionSet, v []*gqlmodel.Lighthouse) graphql.Marshaler {
+func (ec *executionContext) marshalNLighthouse2ᚕᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐLighthouse(ctx context.Context, sel ast.SelectionSet, v []*gqlmodel.Lighthouse) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -19086,7 +19165,7 @@ func (ec *executionContext) marshalNLighthouse2ᚕᚖgithubᚗcomᚋcloudfieldcz
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOLighthouse2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐLighthouse(ctx, sel, v[i])
+			ret[i] = ec.marshalOLighthouse2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐLighthouse(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -19100,7 +19179,7 @@ func (ec *executionContext) marshalNLighthouse2ᚕᚖgithubᚗcomᚋcloudfieldcz
 	return ret
 }
 
-func (ec *executionContext) marshalNLogItem2ᚕᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐLogItemᚄ(ctx context.Context, sel ast.SelectionSet, v []*gqlmodel.LogItem) graphql.Marshaler {
+func (ec *executionContext) marshalNLogItem2ᚕᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐLogItemᚄ(ctx context.Context, sel ast.SelectionSet, v []*gqlmodel.LogItem) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -19124,7 +19203,7 @@ func (ec *executionContext) marshalNLogItem2ᚕᚖgithubᚗcomᚋcloudfieldczᚋ
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNLogItem2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐLogItem(ctx, sel, v[i])
+			ret[i] = ec.marshalNLogItem2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐLogItem(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -19144,7 +19223,7 @@ func (ec *executionContext) marshalNLogItem2ᚕᚖgithubᚗcomᚋcloudfieldczᚋ
 	return ret
 }
 
-func (ec *executionContext) marshalNLogItem2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐLogItem(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.LogItem) graphql.Marshaler {
+func (ec *executionContext) marshalNLogItem2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐLogItem(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.LogItem) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -19154,11 +19233,11 @@ func (ec *executionContext) marshalNLogItem2ᚖgithubᚗcomᚋcloudfieldczᚋneb
 	return ec._LogItem(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNServer2githubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐServer(ctx context.Context, sel ast.SelectionSet, v gqlmodel.Server) graphql.Marshaler {
+func (ec *executionContext) marshalNServer2githubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐServer(ctx context.Context, sel ast.SelectionSet, v gqlmodel.Server) graphql.Marshaler {
 	return ec._Server(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNServer2ᚕᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐServerᚄ(ctx context.Context, sel ast.SelectionSet, v []*gqlmodel.Server) graphql.Marshaler {
+func (ec *executionContext) marshalNServer2ᚕᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐServerᚄ(ctx context.Context, sel ast.SelectionSet, v []*gqlmodel.Server) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -19182,7 +19261,7 @@ func (ec *executionContext) marshalNServer2ᚕᚖgithubᚗcomᚋcloudfieldczᚋn
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNServer2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐServer(ctx, sel, v[i])
+			ret[i] = ec.marshalNServer2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐServer(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -19202,7 +19281,7 @@ func (ec *executionContext) marshalNServer2ᚕᚖgithubᚗcomᚋcloudfieldczᚋn
 	return ret
 }
 
-func (ec *executionContext) marshalNServer2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐServer(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.Server) graphql.Marshaler {
+func (ec *executionContext) marshalNServer2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐServer(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.Server) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -19212,7 +19291,7 @@ func (ec *executionContext) marshalNServer2ᚖgithubᚗcomᚋcloudfieldczᚋnebu
 	return ec._Server(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNServerForAccess2ᚕᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐServerForAccessᚄ(ctx context.Context, sel ast.SelectionSet, v []*gqlmodel.ServerForAccess) graphql.Marshaler {
+func (ec *executionContext) marshalNServerForAccess2ᚕᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐServerForAccessᚄ(ctx context.Context, sel ast.SelectionSet, v []*gqlmodel.ServerForAccess) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -19236,7 +19315,7 @@ func (ec *executionContext) marshalNServerForAccess2ᚕᚖgithubᚗcomᚋcloudfi
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNServerForAccess2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐServerForAccess(ctx, sel, v[i])
+			ret[i] = ec.marshalNServerForAccess2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐServerForAccess(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -19256,7 +19335,7 @@ func (ec *executionContext) marshalNServerForAccess2ᚕᚖgithubᚗcomᚋcloudfi
 	return ret
 }
 
-func (ec *executionContext) marshalNServerForAccess2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐServerForAccess(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.ServerForAccess) graphql.Marshaler {
+func (ec *executionContext) marshalNServerForAccess2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐServerForAccess(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.ServerForAccess) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -19266,7 +19345,7 @@ func (ec *executionContext) marshalNServerForAccess2ᚖgithubᚗcomᚋcloudfield
 	return ec._ServerForAccess(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNServerOSAutoUpdatePolicy2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐServerOSAutoUpdatePolicy(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.ServerOSAutoUpdatePolicy) graphql.Marshaler {
+func (ec *executionContext) marshalNServerOSAutoUpdatePolicy2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐServerOSAutoUpdatePolicy(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.ServerOSAutoUpdatePolicy) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -19349,11 +19428,11 @@ func (ec *executionContext) marshalNString2ᚕᚖstring(ctx context.Context, sel
 	return ret
 }
 
-func (ec *executionContext) marshalNSystemConfig2githubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐSystemConfig(ctx context.Context, sel ast.SelectionSet, v gqlmodel.SystemConfig) graphql.Marshaler {
+func (ec *executionContext) marshalNSystemConfig2githubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐSystemConfig(ctx context.Context, sel ast.SelectionSet, v gqlmodel.SystemConfig) graphql.Marshaler {
 	return ec._SystemConfig(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNSystemConfig2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐSystemConfig(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.SystemConfig) graphql.Marshaler {
+func (ec *executionContext) marshalNSystemConfig2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐSystemConfig(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.SystemConfig) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -19363,16 +19442,16 @@ func (ec *executionContext) marshalNSystemConfig2ᚖgithubᚗcomᚋcloudfieldcz�
 	return ec._SystemConfig(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNSystemConfigData2githubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐSystemConfigData(ctx context.Context, v interface{}) (gqlmodel.SystemConfigData, error) {
+func (ec *executionContext) unmarshalNSystemConfigData2githubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐSystemConfigData(ctx context.Context, v interface{}) (gqlmodel.SystemConfigData, error) {
 	res, err := ec.unmarshalInputSystemConfigData(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNUser2githubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v gqlmodel.User) graphql.Marshaler {
+func (ec *executionContext) marshalNUser2githubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v gqlmodel.User) graphql.Marshaler {
 	return ec._User(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNUser2ᚕᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐUserᚄ(ctx context.Context, sel ast.SelectionSet, v []*gqlmodel.User) graphql.Marshaler {
+func (ec *executionContext) marshalNUser2ᚕᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐUserᚄ(ctx context.Context, sel ast.SelectionSet, v []*gqlmodel.User) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -19396,7 +19475,7 @@ func (ec *executionContext) marshalNUser2ᚕᚖgithubᚗcomᚋcloudfieldczᚋneb
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNUser2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐUser(ctx, sel, v[i])
+			ret[i] = ec.marshalNUser2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐUser(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -19416,7 +19495,7 @@ func (ec *executionContext) marshalNUser2ᚕᚖgithubᚗcomᚋcloudfieldczᚋneb
 	return ret
 }
 
-func (ec *executionContext) marshalNUser2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.User) graphql.Marshaler {
+func (ec *executionContext) marshalNUser2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.User) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -19426,11 +19505,11 @@ func (ec *executionContext) marshalNUser2ᚖgithubᚗcomᚋcloudfieldczᚋnebula
 	return ec._User(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNUserAccess2githubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐUserAccess(ctx context.Context, sel ast.SelectionSet, v gqlmodel.UserAccess) graphql.Marshaler {
+func (ec *executionContext) marshalNUserAccess2githubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐUserAccess(ctx context.Context, sel ast.SelectionSet, v gqlmodel.UserAccess) graphql.Marshaler {
 	return ec._UserAccess(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNUserAccess2ᚕᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐUserAccessᚄ(ctx context.Context, sel ast.SelectionSet, v []*gqlmodel.UserAccess) graphql.Marshaler {
+func (ec *executionContext) marshalNUserAccess2ᚕᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐUserAccessᚄ(ctx context.Context, sel ast.SelectionSet, v []*gqlmodel.UserAccess) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -19454,7 +19533,7 @@ func (ec *executionContext) marshalNUserAccess2ᚕᚖgithubᚗcomᚋcloudfieldcz
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNUserAccess2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐUserAccess(ctx, sel, v[i])
+			ret[i] = ec.marshalNUserAccess2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐUserAccess(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -19474,7 +19553,7 @@ func (ec *executionContext) marshalNUserAccess2ᚕᚖgithubᚗcomᚋcloudfieldcz
 	return ret
 }
 
-func (ec *executionContext) marshalNUserAccess2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐUserAccess(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.UserAccess) graphql.Marshaler {
+func (ec *executionContext) marshalNUserAccess2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐUserAccess(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.UserAccess) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -19484,16 +19563,16 @@ func (ec *executionContext) marshalNUserAccess2ᚖgithubᚗcomᚋcloudfieldczᚋ
 	return ec._UserAccess(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNUserAccessData2githubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐUserAccessData(ctx context.Context, v interface{}) (gqlmodel.UserAccessData, error) {
+func (ec *executionContext) unmarshalNUserAccessData2githubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐUserAccessData(ctx context.Context, v interface{}) (gqlmodel.UserAccessData, error) {
 	res, err := ec.unmarshalInputUserAccessData(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNUserAccessDeviceInfo2githubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐUserAccessDeviceInfo(ctx context.Context, sel ast.SelectionSet, v gqlmodel.UserAccessDeviceInfo) graphql.Marshaler {
+func (ec *executionContext) marshalNUserAccessDeviceInfo2githubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐUserAccessDeviceInfo(ctx context.Context, sel ast.SelectionSet, v gqlmodel.UserAccessDeviceInfo) graphql.Marshaler {
 	return ec._UserAccessDeviceInfo(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNUserAccessDeviceInfo2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐUserAccessDeviceInfo(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.UserAccessDeviceInfo) graphql.Marshaler {
+func (ec *executionContext) marshalNUserAccessDeviceInfo2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐUserAccessDeviceInfo(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.UserAccessDeviceInfo) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -19503,11 +19582,11 @@ func (ec *executionContext) marshalNUserAccessDeviceInfo2ᚖgithubᚗcomᚋcloud
 	return ec._UserAccessDeviceInfo(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNUserAccessTemplate2githubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐUserAccessTemplate(ctx context.Context, sel ast.SelectionSet, v gqlmodel.UserAccessTemplate) graphql.Marshaler {
+func (ec *executionContext) marshalNUserAccessTemplate2githubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐUserAccessTemplate(ctx context.Context, sel ast.SelectionSet, v gqlmodel.UserAccessTemplate) graphql.Marshaler {
 	return ec._UserAccessTemplate(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNUserAccessTemplate2ᚕᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐUserAccessTemplateᚄ(ctx context.Context, sel ast.SelectionSet, v []*gqlmodel.UserAccessTemplate) graphql.Marshaler {
+func (ec *executionContext) marshalNUserAccessTemplate2ᚕᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐUserAccessTemplateᚄ(ctx context.Context, sel ast.SelectionSet, v []*gqlmodel.UserAccessTemplate) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -19531,7 +19610,7 @@ func (ec *executionContext) marshalNUserAccessTemplate2ᚕᚖgithubᚗcomᚋclou
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNUserAccessTemplate2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐUserAccessTemplate(ctx, sel, v[i])
+			ret[i] = ec.marshalNUserAccessTemplate2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐUserAccessTemplate(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -19551,7 +19630,7 @@ func (ec *executionContext) marshalNUserAccessTemplate2ᚕᚖgithubᚗcomᚋclou
 	return ret
 }
 
-func (ec *executionContext) marshalNUserAccessTemplate2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐUserAccessTemplate(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.UserAccessTemplate) graphql.Marshaler {
+func (ec *executionContext) marshalNUserAccessTemplate2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐUserAccessTemplate(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.UserAccessTemplate) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -19561,17 +19640,17 @@ func (ec *executionContext) marshalNUserAccessTemplate2ᚖgithubᚗcomᚋcloudfi
 	return ec._UserAccessTemplate(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNUserAccessTemplateData2githubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐUserAccessTemplateData(ctx context.Context, v interface{}) (gqlmodel.UserAccessTemplateData, error) {
+func (ec *executionContext) unmarshalNUserAccessTemplateData2githubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐUserAccessTemplateData(ctx context.Context, v interface{}) (gqlmodel.UserAccessTemplateData, error) {
 	res, err := ec.unmarshalInputUserAccessTemplateData(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNUserData2githubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐUserData(ctx context.Context, v interface{}) (gqlmodel.UserData, error) {
+func (ec *executionContext) unmarshalNUserData2githubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐUserData(ctx context.Context, v interface{}) (gqlmodel.UserData, error) {
 	res, err := ec.unmarshalInputUserData(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNUserStatistic2ᚕᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐUserStatistic(ctx context.Context, sel ast.SelectionSet, v []*gqlmodel.UserStatistic) graphql.Marshaler {
+func (ec *executionContext) marshalNUserStatistic2ᚕᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐUserStatistic(ctx context.Context, sel ast.SelectionSet, v []*gqlmodel.UserStatistic) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -19595,7 +19674,7 @@ func (ec *executionContext) marshalNUserStatistic2ᚕᚖgithubᚗcomᚋcloudfiel
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOUserStatistic2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐUserStatistic(ctx, sel, v[i])
+			ret[i] = ec.marshalOUserStatistic2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐUserStatistic(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -19862,21 +19941,21 @@ func (ec *executionContext) marshalN__TypeKind2string(ctx context.Context, sel a
 	return res
 }
 
-func (ec *executionContext) marshalOAccessDevice2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐAccessDevice(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.AccessDevice) graphql.Marshaler {
+func (ec *executionContext) marshalOAccessDevice2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐAccessDevice(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.AccessDevice) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._AccessDevice(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOAccessListenerType2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐAccessListenerType(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.AccessListenerType) graphql.Marshaler {
+func (ec *executionContext) marshalOAccessListenerType2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐAccessListenerType(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.AccessListenerType) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._AccessListenerType(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOAccessStatistic2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐAccessStatistic(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.AccessStatistic) graphql.Marshaler {
+func (ec *executionContext) marshalOAccessStatistic2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐAccessStatistic(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.AccessStatistic) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -19925,7 +20004,7 @@ func (ec *executionContext) marshalODateTime2ᚖstring(ctx context.Context, sel 
 	return res
 }
 
-func (ec *executionContext) marshalOGroup2ᚕᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐGroupᚄ(ctx context.Context, sel ast.SelectionSet, v []*gqlmodel.Group) graphql.Marshaler {
+func (ec *executionContext) marshalOGroup2ᚕᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐGroupᚄ(ctx context.Context, sel ast.SelectionSet, v []*gqlmodel.Group) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -19952,7 +20031,7 @@ func (ec *executionContext) marshalOGroup2ᚕᚖgithubᚗcomᚋcloudfieldczᚋne
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNGroup2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐGroup(ctx, sel, v[i])
+			ret[i] = ec.marshalNGroup2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐGroup(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -19972,7 +20051,7 @@ func (ec *executionContext) marshalOGroup2ᚕᚖgithubᚗcomᚋcloudfieldczᚋne
 	return ret
 }
 
-func (ec *executionContext) unmarshalOGroupData2ᚕᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐGroupDataᚄ(ctx context.Context, v interface{}) ([]*gqlmodel.GroupData, error) {
+func (ec *executionContext) unmarshalOGroupData2ᚕᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐGroupDataᚄ(ctx context.Context, v interface{}) ([]*gqlmodel.GroupData, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -19984,7 +20063,7 @@ func (ec *executionContext) unmarshalOGroupData2ᚕᚖgithubᚗcomᚋcloudfieldc
 	res := make([]*gqlmodel.GroupData, len(vSlice))
 	for i := range vSlice {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalNGroupData2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐGroupData(ctx, vSlice[i])
+		res[i], err = ec.unmarshalNGroupData2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐGroupData(ctx, vSlice[i])
 		if err != nil {
 			return nil, err
 		}
@@ -20008,21 +20087,21 @@ func (ec *executionContext) marshalOInt2ᚖint(ctx context.Context, sel ast.Sele
 	return res
 }
 
-func (ec *executionContext) marshalOLighthouse2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐLighthouse(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.Lighthouse) graphql.Marshaler {
+func (ec *executionContext) marshalOLighthouse2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐLighthouse(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.Lighthouse) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._Lighthouse(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOOsAutoUpdate2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐOsAutoUpdate(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.OsAutoUpdate) graphql.Marshaler {
+func (ec *executionContext) marshalOOsAutoUpdate2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐOsAutoUpdate(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.OsAutoUpdate) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._OsAutoUpdate(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOServerAccessData2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐServerAccessData(ctx context.Context, v interface{}) (*gqlmodel.ServerAccessData, error) {
+func (ec *executionContext) unmarshalOServerAccessData2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐServerAccessData(ctx context.Context, v interface{}) (*gqlmodel.ServerAccessData, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -20030,7 +20109,7 @@ func (ec *executionContext) unmarshalOServerAccessData2ᚖgithubᚗcomᚋcloudfi
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalOServerData2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐServerData(ctx context.Context, v interface{}) (*gqlmodel.ServerData, error) {
+func (ec *executionContext) unmarshalOServerData2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐServerData(ctx context.Context, v interface{}) (*gqlmodel.ServerData, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -20038,7 +20117,7 @@ func (ec *executionContext) unmarshalOServerData2ᚖgithubᚗcomᚋcloudfieldcz�
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalOServerOSAutoUpdatePolicyData2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐServerOSAutoUpdatePolicyData(ctx context.Context, v interface{}) (*gqlmodel.ServerOSAutoUpdatePolicyData, error) {
+func (ec *executionContext) unmarshalOServerOSAutoUpdatePolicyData2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐServerOSAutoUpdatePolicyData(ctx context.Context, v interface{}) (*gqlmodel.ServerOSAutoUpdatePolicyData, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -20062,7 +20141,7 @@ func (ec *executionContext) marshalOString2ᚖstring(ctx context.Context, sel as
 	return res
 }
 
-func (ec *executionContext) marshalOUserStatistic2ᚖgithubᚗcomᚋcloudfieldczᚋnebulaᚑadminᚋgraphᚋmodelᚐUserStatistic(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.UserStatistic) graphql.Marshaler {
+func (ec *executionContext) marshalOUserStatistic2ᚖgithubᚗcomᚋshieldooᚋshieldooᚑmeshᚑadminᚋgraphᚋmodelᚐUserStatistic(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.UserStatistic) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}

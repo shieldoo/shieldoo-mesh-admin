@@ -398,6 +398,7 @@ type Access struct {
 	Name                     string `gorm:"type:varchar(256);not null"`
 	IpAddress                string `gorm:"type:varchar(32);index;unique;not null"`
 	FQDN                     string `gorm:"type:varchar(256);not null"`
+	AdditionalHostnames      string `gorm:"type:TEXT NOT NULL DEFAULT ''"`
 	Description              string
 	AccessGroups             []AccessGroup `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	FwconfigID               int           `gorm:"not null"`
