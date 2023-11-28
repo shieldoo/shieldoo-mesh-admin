@@ -61,6 +61,8 @@ type Access struct {
 	IPAddress string `json:"ipAddress"`
 	// Fully Qualified Domain Name of the entity
 	Fqdn string `json:"fqdn"`
+	// List of additional hostnames for the entity
+	AdditionalHostnames []string `json:"additionalHostnames"`
 	// Optional description of the access definition
 	Description *string `json:"description"`
 	// Groups that the entity is a member of
@@ -424,6 +426,8 @@ func (this Server) GetDescription() *string { return this.Description }
 type ServerAccessData struct {
 	// IP address to be assigned to the entity or null if one should be taken from the pool
 	IPAddress *string `json:"ipAddress"`
+	// Additional hostnames for the entity
+	AdditionalHostnames []string `json:"additionalHostnames"`
 	// Optional description of the access definition
 	Description *string `json:"description"`
 	// IDs of the groups that the entity is a member of

@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"math"
+	"regexp"
 	"strings"
 	"time"
 
@@ -102,12 +103,34 @@ func modelconvGqlUserAccess2UserAccess(e gqlmodel.UserAccessData, m *model.UserA
 	}
 }
 
+func modelconvString2Array(s string) []string {
+	var ret []string
+	s = strings.TrimSpace(s)
+	// strings are like string1,string2,string3
+	if s != "" {
+		tmpret := strings.Split(s, ",")
+		for _, v := range tmpret {
+			// validate each string if it is fqdn or hostname by regexp
+			match, _ := regexp.MatchString(`^([a-zA-Z0-9]+(-[a-zA-Z0-9]+)*(\.[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*)*)+$`, v)
+			if match {
+				ret = append(ret, v)
+			}
+		}
+	}
+	return ret
+}
+
+func modelconvArray2String(a []string) string {
+	return strings.Join(a, ",") + " "
+}
+
 func modelconvGqlServerAccess2Access(entityId int, accessId int, e gqlmodel.ServerAccessData, fqdn string, autoupdate bool, m *model.Access) {
 	if e.Description != nil {
 		m.Description = *e.Description
 	}
 	m.ID = accessId
 	m.FQDN = fqdn
+	m.AdditionalHostnames = modelconvArray2String(e.AdditionalHostnames)
 	m.EntityID = entityId
 	m.FwconfigID = e.FwConfigID
 	m.ValidTo = convertJsonDate2Date(e.ValidTo)
@@ -380,21 +403,22 @@ func modelconvAccess2Gql(a model.Access) gqlmodel.Access {
 	}
 
 	r := gqlmodel.Access{
-		ID:                 a.ID,
-		IPAddress:          a.IpAddress,
-		Fqdn:               a.FQDN,
-		Description:        &a.Description,
-		ValidFrom:          convertDateJson(a.ValidFrom),
-		ValidTo:            convertDateJson(a.ValidTo),
-		Changed:            convertDateJson(a.Changed),
-		Config:             &cfg,
-		Groups:             grps,
-		FwConfig:           &fwconf,
-		PunchBack:          *a.NebulaPunchBack,
-		RestrictiveNetwork: *a.NebulaRestrictiveNetwork,
-		Statistics:         &stat,
-		DeviceInfo:         &device,
-		Listeners:          lsnrs,
+		ID:                  a.ID,
+		IPAddress:           a.IpAddress,
+		AdditionalHostnames: modelconvString2Array(a.AdditionalHostnames),
+		Fqdn:                a.FQDN,
+		Description:         &a.Description,
+		ValidFrom:           convertDateJson(a.ValidFrom),
+		ValidTo:             convertDateJson(a.ValidTo),
+		Changed:             convertDateJson(a.Changed),
+		Config:              &cfg,
+		Groups:              grps,
+		FwConfig:            &fwconf,
+		PunchBack:           *a.NebulaPunchBack,
+		RestrictiveNetwork:  *a.NebulaRestrictiveNetwork,
+		Statistics:          &stat,
+		DeviceInfo:          &device,
+		Listeners:           lsnrs,
 	}
 	return r
 }

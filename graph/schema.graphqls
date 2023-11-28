@@ -166,6 +166,8 @@ type Access {
   ipAddress: String!
   "Fully Qualified Domain Name of the entity"
   fqdn: String!
+  "List of additional hostnames for the entity"
+  additionalHostnames: [String!]!
   "Optional description of the access definition"
   description: String
   "Groups that the entity is a member of"
@@ -709,6 +711,8 @@ Data necessary for creating or updating an server-access definition
 input ServerAccessData {
   "IP address to be assigned to the entity or null if one should be taken from the pool"
   ipAddress: String
+  "Additional hostnames for the entity"
+  additionalHostnames: [String!]!
   "Optional description of the access definition"
   description: String
   "IDs of the groups that the entity is a member of"

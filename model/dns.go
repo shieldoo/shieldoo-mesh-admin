@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strings"
 	"time"
 
 	log "github.com/sirupsen/logrus"
@@ -22,6 +23,13 @@ func CreateDNS(db *gorm.DB) {
 
 	for _, i := range c {
 		ret = append(ret, i.IpAddress+" "+i.FQDN)
+		if strings.TrimSpace(i.AdditionalHostnames) != "" {
+			for _, s := range strings.Split(strings.TrimSpace(i.AdditionalHostnames), ",") {
+				if strings.TrimSpace(s) != "" {
+					ret = append(ret, i.IpAddress+" "+strings.TrimSpace(s))
+				}
+			}
+		}
 	}
 
 	b, err := json.Marshal(ret)

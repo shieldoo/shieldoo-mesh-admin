@@ -256,12 +256,13 @@ func (r *mutationResolver) ServerSave(ctx context.Context, data *gqlmodel.Server
 			if data.Access == nil {
 				// access not send from server, we have to update it
 				inpAccess = &gqlmodel.ServerAccessData{
-					IPAddress:          &ma.IpAddress,
-					Description:        &ma.Description,
-					FwConfigID:         ma.FwconfigID,
-					ValidTo:            convertDateJson(ma.ValidTo),
-					PunchBack:          *ma.NebulaPunchBack,
-					RestrictiveNetwork: *ma.NebulaRestrictiveNetwork,
+					IPAddress:           &ma.IpAddress,
+					AdditionalHostnames: modelconvString2Array(ma.AdditionalHostnames),
+					Description:         &ma.Description,
+					FwConfigID:          ma.FwconfigID,
+					ValidTo:             convertDateJson(ma.ValidTo),
+					PunchBack:           *ma.NebulaPunchBack,
+					RestrictiveNetwork:  *ma.NebulaRestrictiveNetwork,
 				}
 				for _, g := range ma.AccessGroups {
 					inpAccess.GroupsIds = append(inpAccess.GroupsIds, g.GroupID)
