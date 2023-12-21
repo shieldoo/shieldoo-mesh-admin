@@ -121,7 +121,7 @@ func DownloadCreateNebulaConfig(db *gorm.DB, a *Access, isLighthouse bool, port 
 	n.Tun.DropLocalBroadcast = true
 	n.Tun.DropMulticast = false
 	n.Tun.TxQueue = 500
-	n.Tun.Mtu = 1300
+	n.Tun.Mtu = 1200
 
 	n.Logging.Level = "info"
 	n.Logging.Format = "json"
