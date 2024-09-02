@@ -1,4 +1,4 @@
-FROM golang:1.20 as buildgo
+FROM golang:1.22 as buildgo
 
 WORKDIR /go/src/github.com/shieldoo/shieldoo-mesh-admin/
 COPY go.mod .
