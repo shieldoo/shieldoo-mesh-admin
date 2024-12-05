@@ -10,6 +10,7 @@ import (
 	"errors"
 	"fmt"
 	"regexp"
+	"sort"
 	"strconv"
 	"time"
 
@@ -957,6 +958,12 @@ func (r *queryResolver) Me(ctx context.Context) (*gqlmodel.User, error) {
 		}
 		for _, v := range e.UserAccesses {
 			v.ServersForAccess = resolveUserAccessToServerDependency(v, allServers)
+		}
+		// sort servers by name
+		for _, v := range e.UserAccesses {
+			sort.Slice(v.ServersForAccess, func(i, j int) bool {
+				return v.ServersForAccess[i].Name < v.ServersForAccess[j].Name
+			})
 		}
 	}
 	return &e, err
