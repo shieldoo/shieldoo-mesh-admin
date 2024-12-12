@@ -164,7 +164,7 @@ func dbCreateDefaultData(db *gorm.DB) {
 				var o Entity
 				DacInviteUser(adminUserLower, ENTITY_DEFAULTTEMPLATE_ID, &u, &o)
 				// send invitation email
-				// go SendInvitationEmail(u.UPN)
+				go SendInvitationEmail(u.UPN)
 			}
 		}
 	}
