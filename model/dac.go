@@ -1336,18 +1336,42 @@ func dacAccessSaveBase(tx *gorm.DB, logupn string, dest *Access, orig *Access, f
 				return err
 			}
 		}
+
+		// Debug logging
+		log.Debug("dacAccessSave - dest.ID: ", dest.ID, " FwconfigID: ", dest.FwconfigID)
+
 		// Clear all associations from dest to prevent GORM from trying to save them
 		dest.AccessGroups = []AccessGroup{}
 		dest.AccessListeners = []AccessListener{}
 		dest.Certificate = Certificate{}
 		dest.AccessStatistic = AccessStatistic{}
 		dest.AccessDevice = AccessDevice{}
-		// Use Session with FullSaveAssociations: false to prevent GORM from trying to save associations
-		if dest.UserAccessID == 0 {
-			return tx.Session(&gorm.Session{FullSaveAssociations: false}).Omit("secret").Omit("user_access_id").Save(&dest).Error
-		} else {
-			return tx.Session(&gorm.Session{FullSaveAssociations: false}).Omit("secret").Save(&dest).Error
+
+		// Use Updates instead of Save to avoid association processing
+		updateFields := map[string]interface{}{
+			"Name":                     dest.Name,
+			"IpAddress":                dest.IpAddress,
+			"FQDN":                     dest.FQDN,
+			"AdditionalHostnames":      dest.AdditionalHostnames,
+			"Description":              dest.Description,
+			"FwconfigID":               dest.FwconfigID,
+			"EntityID":                 dest.EntityID,
+			"ValidFrom":                dest.ValidFrom,
+			"ValidTo":                  dest.ValidTo,
+			"Changed":                  dest.Changed,
+			"NebulaPunchBack":          dest.NebulaPunchBack,
+			"NebulaRestrictiveNetwork": dest.NebulaRestrictiveNetwork,
+			"Autoupdate":               dest.Autoupdate,
+			"OSAutoupdateConfig":       dest.OSAutoupdateConfig,
 		}
+
+		if dest.UserAccessID != 0 {
+			updateFields["UserAccessID"] = dest.UserAccessID
+		}
+
+		return tx.Model(&dest).
+			Omit("secret", "Fwconfig", "Certificate", "AccessGroups", "AccessListeners", "AccessStatistic", "AccessDevice").
+			Updates(updateFields).Error
 	}
 }
 
@@ -1513,11 +1537,28 @@ func dacUserAccessSave(tx *gorm.DB, logupn string, dest *UserAccess, orig *UserA
 		if err := tx.Delete(UserAccessGroup{}, "user_access_id = ?", dest.ID).Error; err != nil {
 			return err
 		}
+
+		// Debug logging
+		log.Debug("dacUserAccessSave - dest.ID: ", dest.ID, " FwconfigID: ", dest.FwconfigID)
+
 		dest.Accesses = []Access{}
 		dest.UserAccessGroups = []UserAccessGroup{}
 		dest.UserAccessTemplate = UserAccessTemplate{}
-		// Use Session with FullSaveAssociations: false to prevent GORM from trying to save associations
-		if err := tx.Session(&gorm.Session{FullSaveAssociations: false}).Omit("secret").Save(&dest).Error; err != nil {
+
+		// Use Updates instead of Save to avoid association processing
+		// Select specific fields to update, excluding associations
+		if err := tx.Model(&dest).
+			Omit("secret", "Fwconfig", "UserAccessTemplate", "Accesses", "UserAccessGroups").
+			Updates(map[string]interface{}{
+				"Name":                 dest.Name,
+				"Description":          dest.Description,
+				"UserAccessTemplateID": dest.UserAccessTemplateID,
+				"FwconfigID":           dest.FwconfigID,
+				"EntityID":             dest.EntityID,
+				"ValidFrom":            dest.ValidFrom,
+				"ValidTo":              dest.ValidTo,
+				"Changed":              dest.Changed,
+			}).Error; err != nil {
 			return err
 		}
 		return nil
