@@ -495,7 +495,11 @@ func DacEntitySave(logupn string, dest *Entity, orig *Entity) (err error) {
 				return dacProcessError(err)
 			}
 			for _, i := range e.Accesses {
-				if err := dacAccessSave(tx, logupn, &i, &i, true); err != nil {
+				// Create a copy for orig to prevent duplicate inserts
+				origAccess := i
+				origAccess.Fwconfig = Fwconfig{}
+				i.Fwconfig = Fwconfig{}
+				if err := dacAccessSave(tx, logupn, &i, &origAccess, true); err != nil {
 					return dacProcessError(err)
 				}
 			}
@@ -1487,6 +1491,8 @@ func dacUserAccessSave(tx *gorm.DB, logupn string, dest *UserAccess, orig *UserA
 								GroupID:  va.GroupID,
 							})
 					}
+					// Clear Fwconfig from orig to prevent duplicate inserts
+					oa.Fwconfig = Fwconfig{}
 					if aerr = dacAccessSave(tx, logupn, &da, &oa, true); aerr != nil {
 						return aerr
 					}
