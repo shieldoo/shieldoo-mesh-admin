@@ -480,9 +480,25 @@ func DacEntitySave(logupn string, dest *Entity, orig *Entity) (err error) {
 	if merr := db.Transaction(func(tx *gorm.DB) error {
 		if isnew {
 			dest.Secret = utils.GenerateRandomString(64)
+			// Clear associations before create
+			dest.Accesses = nil
+			dest.UserAccesses = nil
 			result = tx.Create(dest)
 		} else {
-			result = tx.Model(dest).Omit("secret").Updates(dest)
+			// Use raw SQL to update only Entity fields, avoiding association processing
+			result = tx.Exec(`UPDATE entities SET
+				entity_type = ?,
+				upn = ?,
+				name = ?,
+				origin = ?,
+				roles = ?
+				WHERE id = ?`,
+				dest.EntityType,
+				dest.UPN,
+				dest.Name,
+				dest.Origin,
+				dest.Roles,
+				dest.ID)
 		}
 		if result.Error != nil {
 			return dacProcessGormResult(result)
