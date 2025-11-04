@@ -1336,6 +1336,12 @@ func dacAccessSaveBase(tx *gorm.DB, logupn string, dest *Access, orig *Access, f
 				return err
 			}
 		}
+		// Clear all associations from dest to prevent GORM from trying to save them
+		dest.AccessGroups = []AccessGroup{}
+		dest.AccessListeners = []AccessListener{}
+		dest.Certificate = Certificate{}
+		dest.AccessStatistic = AccessStatistic{}
+		dest.AccessDevice = AccessDevice{}
 		// Use Session with FullSaveAssociations: false to prevent GORM from trying to save associations
 		if dest.UserAccessID == 0 {
 			return tx.Session(&gorm.Session{FullSaveAssociations: false}).Omit("secret").Omit("user_access_id").Save(&dest).Error
@@ -1452,6 +1458,9 @@ func dacUserAccessSave(tx *gorm.DB, logupn string, dest *UserAccess, orig *UserA
 		dest.ValidFrom = time.Now().UTC()
 		//create secret
 		dest.Secret = utils.GenerateRandomString(64)
+		// Clear associations that shouldn't be auto-created
+		dest.Accesses = []Access{}
+		dest.UserAccessTemplate = UserAccessTemplate{}
 		return tx.Create(dest).Error
 	} else {
 		// if there is change in cert relevant data
@@ -1505,6 +1514,8 @@ func dacUserAccessSave(tx *gorm.DB, logupn string, dest *UserAccess, orig *UserA
 			return err
 		}
 		dest.Accesses = []Access{}
+		dest.UserAccessGroups = []UserAccessGroup{}
+		dest.UserAccessTemplate = UserAccessTemplate{}
 		// Use Session with FullSaveAssociations: false to prevent GORM from trying to save associations
 		if err := tx.Session(&gorm.Session{FullSaveAssociations: false}).Omit("secret").Save(&dest).Error; err != nil {
 			return err
