@@ -1336,10 +1336,11 @@ func dacAccessSaveBase(tx *gorm.DB, logupn string, dest *Access, orig *Access, f
 				return err
 			}
 		}
+		// Use Session with FullSaveAssociations: false to prevent GORM from trying to save associations
 		if dest.UserAccessID == 0 {
-			return tx.Omit("secret").Omit("user_access_id").Save(&dest).Error
+			return tx.Session(&gorm.Session{FullSaveAssociations: false}).Omit("secret").Omit("user_access_id").Save(&dest).Error
 		} else {
-			return tx.Omit("secret").Save(&dest).Error
+			return tx.Session(&gorm.Session{FullSaveAssociations: false}).Omit("secret").Save(&dest).Error
 		}
 	}
 }
@@ -1504,7 +1505,8 @@ func dacUserAccessSave(tx *gorm.DB, logupn string, dest *UserAccess, orig *UserA
 			return err
 		}
 		dest.Accesses = []Access{}
-		if err := tx.Omit("secret").Save(&dest).Error; err != nil {
+		// Use Session with FullSaveAssociations: false to prevent GORM from trying to save associations
+		if err := tx.Session(&gorm.Session{FullSaveAssociations: false}).Omit("secret").Save(&dest).Error; err != nil {
 			return err
 		}
 		return nil
