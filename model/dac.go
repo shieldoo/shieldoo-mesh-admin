@@ -309,6 +309,7 @@ func DacInviteUser(upn string, templateId int, dest *Entity, orig *Entity) (err 
 		Description:          t.Description,
 		UserAccessTemplateID: templateId,
 		FwconfigID:           t.FwconfigID,
+		Fwconfig:             Fwconfig{}, // clear to prevent GORM from trying to insert
 		ValidFrom:            t.ValidFrom,
 		ValidTo:              t.ValidTo,
 		UserAccessGroups:     []UserAccessGroup{},
@@ -364,6 +365,7 @@ func DacImportUser(upn string, name string, isadmin bool, origin string, groups 
 			Description:          "import",
 			UserAccessTemplateID: t.ID,
 			FwconfigID:           t.FwconfigID,
+			Fwconfig:             Fwconfig{}, // clear to prevent GORM from trying to insert
 			ValidFrom:            t.ValidFrom,
 			ValidTo:              t.ValidTo,
 			UserAccessGroups:     []UserAccessGroup{},
@@ -415,6 +417,7 @@ func DacImportUser(upn string, name string, isadmin bool, origin string, groups 
 				Description:          "import",
 				UserAccessTemplateID: t.ID,
 				FwconfigID:           t.FwconfigID,
+				Fwconfig:             Fwconfig{}, // clear to prevent GORM from trying to insert
 				ValidFrom:            t.ValidFrom,
 				ValidTo:              t.ValidTo,
 				UserAccessGroups:     []UserAccessGroup{},
