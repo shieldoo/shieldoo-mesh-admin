@@ -1340,38 +1340,57 @@ func dacAccessSaveBase(tx *gorm.DB, logupn string, dest *Access, orig *Access, f
 		// Debug logging
 		log.Debug("dacAccessSave - dest.ID: ", dest.ID, " FwconfigID: ", dest.FwconfigID)
 
-		// Clear all associations from dest to prevent GORM from trying to save them
-		dest.AccessGroups = []AccessGroup{}
-		dest.AccessListeners = []AccessListener{}
+		// Completely clear dest to remove all loaded associations
+		dest.AccessGroups = nil
+		dest.AccessListeners = nil
 		dest.Certificate = Certificate{}
 		dest.AccessStatistic = AccessStatistic{}
 		dest.AccessDevice = AccessDevice{}
+		dest.Fwconfig = Fwconfig{}
 
-		// Use Updates instead of Save to avoid association processing
-		updateFields := map[string]interface{}{
-			"Name":                     dest.Name,
-			"IpAddress":                dest.IpAddress,
-			"FQDN":                     dest.FQDN,
-			"AdditionalHostnames":      dest.AdditionalHostnames,
-			"Description":              dest.Description,
-			"FwconfigID":               dest.FwconfigID,
-			"EntityID":                 dest.EntityID,
-			"ValidFrom":                dest.ValidFrom,
-			"ValidTo":                  dest.ValidTo,
-			"Changed":                  dest.Changed,
-			"NebulaPunchBack":          dest.NebulaPunchBack,
-			"NebulaRestrictiveNetwork": dest.NebulaRestrictiveNetwork,
-			"Autoupdate":               dest.Autoupdate,
-			"OSAutoupdateConfig":       dest.OSAutoupdateConfig,
+		// Use raw UPDATE to completely bypass GORM's association handling
+		sql := `UPDATE accesses SET
+			name = ?,
+			ip_address = ?,
+			fqdn = ?,
+			additional_hostnames = ?,
+			description = ?,
+			fwconfig_id = ?,
+			entity_id = ?,
+			valid_from = ?,
+			valid_to = ?,
+			changed = ?,
+			nebula_punch_back = ?,
+			nebula_restrictive_network = ?,
+			autoupdate = ?,
+			os_autoupdate_config = ?`
+
+		params := []interface{}{
+			dest.Name,
+			dest.IpAddress,
+			dest.FQDN,
+			dest.AdditionalHostnames,
+			dest.Description,
+			dest.FwconfigID,
+			dest.EntityID,
+			dest.ValidFrom,
+			dest.ValidTo,
+			dest.Changed,
+			dest.NebulaPunchBack,
+			dest.NebulaRestrictiveNetwork,
+			dest.Autoupdate,
+			dest.OSAutoupdateConfig,
 		}
 
 		if dest.UserAccessID != 0 {
-			updateFields["UserAccessID"] = dest.UserAccessID
+			sql += `, user_access_id = ?`
+			params = append(params, dest.UserAccessID)
 		}
 
-		return tx.Model(&dest).
-			Omit("secret", "Fwconfig", "Certificate", "AccessGroups", "AccessListeners", "AccessStatistic", "AccessDevice").
-			Updates(updateFields).Error
+		sql += ` WHERE id = ?`
+		params = append(params, dest.ID)
+
+		return tx.Exec(sql, params...).Error
 	}
 }
 
@@ -1540,25 +1559,35 @@ func dacUserAccessSave(tx *gorm.DB, logupn string, dest *UserAccess, orig *UserA
 
 		// Debug logging
 		log.Debug("dacUserAccessSave - dest.ID: ", dest.ID, " FwconfigID: ", dest.FwconfigID)
+		log.Debug("dacUserAccessSave - len(orig.Accesses): ", len(orig.Accesses))
+		log.Debug("dacUserAccessSave - len(dest.Accesses): ", len(dest.Accesses))
 
-		dest.Accesses = []Access{}
-		dest.UserAccessGroups = []UserAccessGroup{}
+		// Completely clear dest to remove all loaded associations
+		dest.Accesses = nil
+		dest.UserAccessGroups = nil
 		dest.UserAccessTemplate = UserAccessTemplate{}
+		dest.Fwconfig = Fwconfig{}
 
-		// Use Updates instead of Save to avoid association processing
-		// Select specific fields to update, excluding associations
-		if err := tx.Model(&dest).
-			Omit("secret", "Fwconfig", "UserAccessTemplate", "Accesses", "UserAccessGroups").
-			Updates(map[string]interface{}{
-				"Name":                 dest.Name,
-				"Description":          dest.Description,
-				"UserAccessTemplateID": dest.UserAccessTemplateID,
-				"FwconfigID":           dest.FwconfigID,
-				"EntityID":             dest.EntityID,
-				"ValidFrom":            dest.ValidFrom,
-				"ValidTo":              dest.ValidTo,
-				"Changed":              dest.Changed,
-			}).Error; err != nil {
+		// Use raw UPDATE to completely bypass GORM's association handling
+		if err := tx.Exec(`UPDATE user_accesses SET
+			name = ?,
+			description = ?,
+			user_access_template_id = ?,
+			fwconfig_id = ?,
+			entity_id = ?,
+			valid_from = ?,
+			valid_to = ?,
+			changed = ?
+			WHERE id = ?`,
+			dest.Name,
+			dest.Description,
+			dest.UserAccessTemplateID,
+			dest.FwconfigID,
+			dest.EntityID,
+			dest.ValidFrom,
+			dest.ValidTo,
+			dest.Changed,
+			dest.ID).Error; err != nil {
 			return err
 		}
 		return nil
