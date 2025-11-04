@@ -1,4 +1,4 @@
-FROM golang:1.22 as buildgo
+FROM golang:1.23 AS buildgo
 
 WORKDIR /go/src/github.com/shieldoo/shieldoo-mesh-admin/
 COPY go.mod .
@@ -23,7 +23,7 @@ COPY utils/ ./utils/
 RUN go test ./...
 RUN go build -o out/shd-admin ./main/
 
-FROM alpine:latest as final
+FROM alpine:latest AS final
 RUN apk --no-cache add ca-certificates
 RUN apk add --no-cache libc6-compat gcompat
 # run as user 1000
